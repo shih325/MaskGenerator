@@ -7,7 +7,10 @@ IF (WIN32)
     set(OpenCV_DIR "D:/Libraries/OpenCV/3.4.5/build_vc15/install")
     set(Qt5_DIR "D:/Libraries/Qt/5.12.0/msvc2017_64/lib/cmake/Qt5")
 ELSEIF (UNIX)
-    # path in unix
+    set(OpenCV_DIR "/usr/lib/cmake/opencv4")
+    set(Qt5_DIR "/usr/lib/cmake/Qt5")
+    # set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui opencv_imgcodecs)
+    # set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "/usr/lib/cmake")
 ENDIF()
 
 # Find OpenCV
