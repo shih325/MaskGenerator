@@ -3,9 +3,12 @@ project(MaskGenerator)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(OpenCV_DIR "D:/Libraries/OpenCV/3.4.5/build_vc15/install")
-set(Qt5_DIR "D:/Libraries/Qt/5.12.0/msvc2017_64/lib/cmake/Qt5")
-
+IF (WIN32)
+    set(OpenCV_DIR "D:/Libraries/OpenCV/3.4.5/build_vc15/install")
+    set(Qt5_DIR "D:/Libraries/Qt/5.12.0/msvc2017_64/lib/cmake/Qt5")
+ELSEIF (UNIX)
+    # path in unix
+ENDIF()
 
 # Find OpenCV
 find_package(OpenCV REQUIRED)
@@ -22,8 +25,8 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED)
 find_package(Qt5 COMPONENTS UiPlugin REQUIRED)
-find_package(Qt5 COMPONENTS Multimedia REQUIRED)
-find_package(Qt5 COMPONENTS MultimediaWidgets REQUIRED)
+#find_package(Qt5 COMPONENTS Multimedia REQUIRED)
+#find_package(Qt5 COMPONENTS MultimediaWidgets REQUIRED)
 
 #Qt版本号
 message(STATUS "Qt5Widgets_VERSION:${Qt5Widgets_VERSION}")
@@ -33,8 +36,8 @@ message(STATUS "Qt5Widgets_INCLUDE_DIRS:${Qt5Widgets_INCLUDE_DIRS}")
 list(GET Qt5Widgets_INCLUDE_DIRS 0 Qt5_INCLUDE_DIR)
 message(STATUS "Qt5Widgets_INCLUDE_DIR:${Qt5_INCLUDE_DIR}")
 
-include_directories(${Qt5_INCLUDE_DIR}QtMultimediaWidgets/)
-include_directories(${Qt5_INCLUDE_DIR}QtMultimedia/)
+#include_directories(${Qt5_INCLUDE_DIR}QtMultimediaWidgets/)
+#include_directories(${Qt5_INCLUDE_DIR}QtMultimedia/)
 include_directories(${Qt5_INCLUDE_DIR}QtCore/${Qt5Widgets_VERSION}/QtCore/private/)
 include_directories(${Qt5_INCLUDE_DIR}QtCore/${Qt5Widgets_VERSION}/QtCore/)
 include_directories(${Qt5_INCLUDE_DIR}QtCore/${Qt5Widgets_VERSION}/)
@@ -45,8 +48,8 @@ add_definitions(-D UNICODE)
 add_definitions(-D QT_CORE_LIB)
 add_definitions(-D QT_GUI_LIB)
 add_definitions(-D QT_WIDGETS_LIB)
-add_definitions(-D QT_MULTIMEDIA_LIB)
-add_definitions(-D QT_MULTIMEDIAWIDGETS_LIB)
+#add_definitions(-D QT_MULTIMEDIA_LIB)
+#add_definitions(-D QT_MULTIMEDIAWIDGETS_LIB)
 add_definitions(-D QT_IMAGE_LIB)
 add_definitions(-D QT_CORE_PRIVATE)
 add_definitions(-D OPENCV)
@@ -82,6 +85,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../install/bin/
 add_executable(MaskGenerator ${SRC_FILES} ${HEAD_FILES} ${MOC_FILES} ${RES_FILES} ${UIC_FILES} ${QRC_FILES})
 
 #链接Qt5依赖项
-target_link_libraries(MaskGenerator Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Multimedia Qt5::MultimediaWidgets)
+target_link_libraries(MaskGenerator Qt5::Widgets Qt5::Core Qt5::Gui)
+#target_link_libraries(MaskGenerator Qt5::Multimedia Qt5::MultimediaWidgets)
 #链接OpenCV
 target_link_libraries(MaskGenerator ${OpenCV_LIBS})
