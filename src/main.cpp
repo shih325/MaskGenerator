@@ -2,6 +2,10 @@
 #include <QtWidgets/QApplication>
 #include "MaskGeneratorView.h"
 
+#include <Utils.h>
+using namespace std;
+using namespace cv;
+
 /*
  * magic
  */
@@ -14,8 +18,11 @@ static int _=[]()
 
 int main(int argc, char *argv[]) {
     //ShowWindow(GetConsoleWindow(), SW_HIDE);
-    QApplication a(argc, argv);
-    MaskGeneratorView w;
-    w.show();
-    return a.exec();
+//    QApplication a(argc, argv);
+//    MaskGeneratorView w;
+//    w.show();
+//    return a.exec();
+    Mat src = imread("/home/tlss/repos/vrlab/MaskGenerator/pics/im0009.png");
+    myDrawContours(src);
+    return 0;
 }

@@ -85,7 +85,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ../../install/bin/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../install/bin/Release)
 
 #创建可执行文件工程
-add_executable(MaskGenerator ${SRC_FILES} ${HEAD_FILES} ${MOC_FILES} ${RES_FILES} ${UIC_FILES} ${QRC_FILES})
+add_executable(MaskGenerator ${SRC_FILES} ${HEAD_FILES} ${MOC_FILES} ${RES_FILES} ${UIC_FILES} ${QRC_FILES} Utils.h Utils.cpp)
 
 #链接Qt5依赖项
 target_link_libraries(MaskGenerator Qt5::Widgets Qt5::Core Qt5::Gui)
