@@ -22,6 +22,8 @@ Mat loadImage(Mat src);
 
 Mat loadImage(string srcImgPath);
 
+void onMouse(int event, int x, int y, int flags, void* param);
+
 void onThreshold(int, void*);
 
 void onCanny(int, void*);

@@ -9,6 +9,18 @@ Mat img;
 Mat gray;
 Mat threshold_img;
 Mat canny_img;
+Mat fill_mask_img;
+
+Mat img_orgi;
+void onMouse(int event, int x, int y, int flags, void* param) {
+    Point seed = Point(x, y);
+    Scalar fill_color = Scalar(0, 0, 255);
+    Rect ccomp;
+	switch (event) {
+		case EVENT_LBUTTONDOWN: floodFill(fill_mask_img, seed, fill_color, &ccomp, Scalar(10,10,10), Scalar(10,10,10));
+	}
+	imshow("flood fill", fill_mask_img);
+}
 
 void onCanny(int, void*) {
     Canny(threshold_img, canny_img, canny_thres, canny_thres * 3, 3);
@@ -19,16 +31,18 @@ void onThreshold(int, void*) {
     threshold(gray, threshold_img, thres_init_value, 255, THRESH_TOZERO);
     vector<vector<Point> > contours;
     findContours(threshold_img, contours, RETR_LIST, CHAIN_APPROX_NONE);
+    int cnt = 0;
     while (1) {
-        Mat img_orgi;
         img.copyTo(img_orgi);
         drawContours(img_orgi, contours, -1, Scalar(0, 255,0), 1);
         imshow("res", img_orgi);
-        imshow("img", img);
-        cout << "onThreshold while loop is called." << endl;
-        char key = waitKey(30) & 0xFF;
+        cout << "onThreshold while loop is called." << cnt << endl;
+        fill_mask_img = img_orgi;
+        setMouseCallback("flood fill", onMouse, 0);
+        char key = (char)waitKey(10);
         if (key == 27)
             break;
+        cnt++;
     }
 //    destroyWindow("res");
 //    imshow("threshold", threshold_img);
@@ -39,7 +53,8 @@ void myDrawContours(Mat src) {
     cvtColor(img, gray, COLOR_RGB2GRAY);
     imshow("gray", gray);
     namedWindow("threshold");
-    namedWindow("res");
+    namedWindow("flood fill");
+    // namedWindow("res");
 //    resizeWindow("threshold", img.size());
     createTrackbar("threshold", "threshold", &thres_init_value, 255, onThreshold);
     // createTrackbar("canny", "threshold", &canny_thres, 255, onCanny);
