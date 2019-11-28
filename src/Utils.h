@@ -13,20 +13,16 @@ using namespace cv;
 using namespace std;
 
 extern int thres_init_value;
-extern int canny_thres;
+extern Mat img;
 extern Mat gray;
 extern Mat threshold_img;
-extern Mat canny_img;
-
-Mat loadImage(Mat src);
-
-Mat loadImage(string srcImgPath);
+extern Mat fill_mask_img;
+extern Mat mask_img;
+extern Mat img_orgi;
 
 void onMouse(int event, int x, int y, int flags, void* param);
 
 void onThreshold(int, void*);
-
-void onCanny(int, void*);
 
 void myDrawContours(Mat src);
 
