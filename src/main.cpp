@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 //    MaskGeneratorView w;
 //    w.show();
 //    return a.exec();
-    Mat src = imread("/home/tlss/repos/vrlab/MaskGenerator/pics/im0041.png");
+    Mat src = imread("/home/tlss/repos/vrlab/MaskGenerator/Example/images/im0041.png");
     myDrawContours(src);
     return 0;
 }
