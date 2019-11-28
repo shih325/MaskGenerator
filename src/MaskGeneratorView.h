@@ -14,11 +14,14 @@ public:
 private:
     Ui::MaskGenerator ui;
     QString srcpath;//待标注文件所在的路径
-    QString list_path;//列表文件所在的路径
-    QStringList ImageList;//图片文件名列表,不是绝对路径,只有文件名
-    int current=0;
-    int NumOfImage=0;
-    void CreateXmlList();
+    QString JsonFile;//列表文件所在的路径
+
+    void CreateJsonList(QStringList filelist);//初始化构造json文件
+    void SaveCurrent(QString maskfilename,QString label); //向json中记录当前图片已经处理完
+    QString getCurrentImageName();  //获取当前要处理的文件名
+    bool CheckJson();
+    void MasterSwitch(bool status); //程序功能总开关,用于控制界面控件的可访问性.
+    bool loadimg(QString imgFileName);  //加载图片文件,准备mask,准备数据库
 public slots:
     void onActionTriggered_OpenFolder();
     void onActionTriggered_OpenFile();

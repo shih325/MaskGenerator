@@ -1,0 +1,38 @@
+{
+    "imagelist": [
+        {
+            "id": "0",
+            "label": "this is a label",
+            "mask": "maskfilename",
+            "name": "21_training.tif"
+        },
+        {
+            "id": "1",
+            "label": "",
+            "mask": "",
+            "name": "22_training.tif"
+        },
+        {
+            "id": "2",
+            "label": "",
+            "mask": "",
+            "name": "23_training.tif"
+        },
+        {
+            "id": "3",
+            "label": "",
+            "mask": "",
+            "name": "24_training.tif"
+        },
+        {
+            "id": "4",
+            "label": "",
+            "mask": "",
+            "name": "25_training.tif"
+        }
+    ],
+    "metadata": {
+        "current": 1,
+        "num": 5
+    }
+}
