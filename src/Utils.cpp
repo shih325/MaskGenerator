@@ -28,18 +28,24 @@ void onThreshold(int, void*) {
     threshold(gray, threshold_img, thres_init_value, 255, THRESH_TOZERO);
     vector<vector<Point> > contours;
     findContours(threshold_img, contours, RETR_LIST, CHAIN_APPROX_NONE);
+    img.copyTo(img_orgi);
     while (1) {
-        img.copyTo(img_orgi);
         drawContours(img_orgi, contours, -1, Scalar(0, 255,0), 1);
-        imshow("flood fill", img_orgi);
         fill_mask_img = img_orgi;
+        imshow("flood fill", fill_mask_img);
         namedWindow("flood fill");
         setMouseCallback("flood fill", onMouse, 0);
         char key = (char)waitKey(100);
-        if (key == 27) {
-           cout << "key: " << key << endl;
-           break;
+        switch(key) {
+            case 27: break;
+            // press 'q' for quit
+            case 113: destroyAllWindows(); exit(0);
+            default: break;
         }
+//         (key == 27) {
+//            cout << "key: " << key << endl;
+//            break;
+//        }
     }
 }
 
@@ -49,6 +55,7 @@ void myDrawContours(Mat src) {
     cvtColor(img, gray, COLOR_RGB2GRAY);
     namedWindow("flood fill");
     imshow("flood fill", img);
+    imshow("mask", mask_img);
 //    namedWindow("mask");
     createTrackbar("threshold", "flood fill", &thres_init_value, 255, onThreshold);
     waitKey(0);
