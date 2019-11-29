@@ -197,6 +197,7 @@
     </property>
     <addaction name="action_help"/>
     <addaction name="action_about"/>
+    <addaction name="action_test"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -251,6 +252,8 @@
    <addaction name="action_next"/>
    <addaction name="separator"/>
    <addaction name="action_settings"/>
+   <addaction name="separator"/>
+   <addaction name="action_test"/>
   </widget>
   <action name="action_open_folder">
    <property name="icon">
@@ -373,6 +376,15 @@
   <action name="action_about">
    <property name="text">
     <string>关于</string>
+   </property>
+  </action>
+  <action name="action_test">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/test.ico</normaloff>:/MaskGenerator/resource/test.ico</iconset>
+   </property>
+   <property name="text">
+    <string>测试</string>
    </property>
   </action>
  </widget>
@@ -604,6 +616,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_test</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onActionTriggered_OpenFolder()</slot>
@@ -620,5 +648,6 @@
   <slot>onActionTriggered_Settings()</slot>
   <slot>onActionTriggered_Help()</slot>
   <slot>onActionTriggered_About()</slot>
+  <slot>onActionTriggered_Test()</slot>
  </slots>
 </ui>

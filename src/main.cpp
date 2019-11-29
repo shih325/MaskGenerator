@@ -4,7 +4,6 @@
 
 #include <Utils.h>
 using namespace std;
-using namespace cv;
 
 /*
  * magic
@@ -18,11 +17,8 @@ static int _=[]()
 
 int main(int argc, char *argv[]) {
     //ShowWindow(GetConsoleWindow(), SW_HIDE);
-//    QApplication a(argc, argv);
-//    MaskGeneratorView w;
-//    w.show();
-//    return a.exec();
-    Mat src = imread("/home/tlss/repos/vrlab/MaskGenerator/Example/images/im0041.png");
-    myDrawContours(src);
-    return 0;
+    QApplication a(argc, argv);
+    MaskGeneratorView w;
+    w.show();
+    return a.exec();
 }

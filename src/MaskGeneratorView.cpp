@@ -14,10 +14,11 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMessageBox>
-#include<QDateTime>
+#include <QDateTime>
+
+#include "Utils.h"
 /*
  * 1. 直接打开的图片格式:png,jpg,jpeg,bmp,tif
- * 2. json对象设置一个自动保存线程,隔一会er自动保存一下
  */
 
 /*
@@ -299,4 +300,18 @@ bool MaskGeneratorView::CheckJson() {
     }
 
     return true;
+}
+/*
+ * 加载图片准备开工
+ *
+ */
+bool MaskGeneratorView::loadimg(QString imgFileName) {
+    return false;
+}
+/*
+ * Action: 测试
+ */
+void MaskGeneratorView::onActionTriggered_Test() {
+    cv::Mat src = cv::imread("../Example/images/im0041.png");
+    myDrawContours(src);
 }

@@ -2,8 +2,8 @@
     "imagelist": [
         {
             "id": "0",
-            "label": "this is a label",
-            "mask": "maskfilename",
+            "label": "",
+            "mask": "",
             "name": "21_training.tif"
         },
         {
@@ -29,10 +29,28 @@
             "label": "",
             "mask": "",
             "name": "25_training.tif"
+        },
+        {
+            "id": "5",
+            "label": "",
+            "mask": "",
+            "name": "im0009.png"
+        },
+        {
+            "id": "6",
+            "label": "",
+            "mask": "",
+            "name": "im0041.png"
+        },
+        {
+            "id": "7",
+            "label": "",
+            "mask": "",
+            "name": "im0087.png"
         }
     ],
     "metadata": {
-        "current": 1,
-        "num": 5
+        "current": 0,
+        "num": 8
     }
 }

@@ -13,5 +13,6 @@
         <file>resource/switch_on.ico</file>
         <file>resource/undo.ico</file>
         <file>resource/setting.ico</file>
+        <file>resource/test.ico</file>
     </qresource>
 </RCC>
