@@ -13,7 +13,7 @@
 #include <QFile>
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include <QMessageBox>
 #include<QDateTime>
 /*
  * 1. 直接打开的图片格式:png,jpg,jpeg,bmp,tif
@@ -29,7 +29,7 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
     ui.setupUi(this);
     //接收拖放
     setAcceptDrops(true);
-
+    MasterSwitch(false);
 }
 /*
  * Action:打开文件夹
@@ -40,28 +40,36 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
 void MaskGeneratorView::onActionTriggered_OpenFolder() {
     //打开文件夹
     QFileDialog * fileDialog = new QFileDialog(this);
-    fileDialog->setWindowTitle(QStringLiteral("Choose"));
+    fileDialog->setWindowTitle(QStringLiteral("Select the folder where you want to mark pictures"));
     fileDialog->setFileMode(QFileDialog::Directory);
     if (fileDialog->exec() == QDialog::Accepted) {
         srcpath = fileDialog->selectedFiles()[0];
-        //寻找xml文件
-        list_path = srcpath+"/list.xml";
-        QFileInfo fileInfo(list_path);
-        if(fileInfo.isFile())//xml存在
+        //寻找json文件
+        JsonFile = srcpath + "/list.json";
+        QFileInfo fileInfo(JsonFile);
+
+        if(fileInfo.isFile())//json存在
         {
-            //获得文件列表信息,获取当前待处理下标
-        }else{//xml不存在
-            //遍历文件,获得文件列表信息,初始化当前待处理下标,构造json
+            //对list进行校验,如果校验通过,则允许使用程序的相关功能
+            if(CheckJson()){
+                MasterSwitch(true);
+            }else{
+                QMessageBox message(QMessageBox::NoIcon, "error!", "Unknown JSON file!");
+                message.exec();
+            }
+        }else{//json不存在
+            //先校验当前文件夹
             QDir dir(srcpath);
             QStringList nameFilters;//设置文件过滤器
             nameFilters << "*.jpg"<<"*.png"<<"*.jpeg"<<"*.bmp"<<"*.tif";//将过滤后的文件名称存入到files列表中
             QStringList ImageList = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
-
-
-            qDebug() <<"num of files:"<<ImageList.size();
-            qDebug() <<srcpath;
-            for (int i = 0; i < ImageList.size(); ++i) {
-                qDebug() << ImageList.at(i);
+            if(ImageList.size()<=0){
+                QMessageBox message(QMessageBox::NoIcon, "error!", "Only \"jpg,png,jpeg,bmp,tif\" files are supported");
+                message.exec();
+            }else{
+                CreateJsonList(ImageList);
+                //允许程序的相关功能使用
+                MasterSwitch(true);
             }
         }
 
@@ -71,13 +79,30 @@ void MaskGeneratorView::onActionTriggered_OpenFolder() {
  * Action:打开文件
  */
 void MaskGeneratorView::onActionTriggered_OpenFile() {
-
+    //打开文件
+    QFileDialog * fileDialog = new QFileDialog(this);
+    fileDialog->setWindowTitle(QStringLiteral("Select the JSON file to store the file list"));
+    fileDialog->setNameFilter(QStringLiteral("file list(*.json)"));
+    fileDialog->setFileMode(QFileDialog::ExistingFile);
+    if (fileDialog->exec() == QDialog::Accepted) {
+        JsonFile = fileDialog->selectedFiles()[0];
+        QFileInfo fileInfo(JsonFile);
+        srcpath=fileInfo.absolutePath();
+        if(CheckJson()){
+            MasterSwitch(true);
+        }else{
+            QMessageBox message(QMessageBox::NoIcon, "error!", "Unknown JSON file!");
+            message.exec();
+        }
+    }
 }
 /*
  * Action:保存
  */
 void MaskGeneratorView::onActionTriggered_Save() {
-    CreateXmlList();
+    SaveCurrent("maskfilename","this is a label");
+
+    qDebug()<<getCurrentImageName();
 }
 /*
  * Action:退出
@@ -146,35 +171,29 @@ void MaskGeneratorView::onActionTriggered_About() {
 
 }
 /*
- * 创建xml文件
+ * 创建json文件
  */
-void MaskGeneratorView::CreateXmlList() {
-    QFile file("E:/CLion/MaskGenerator/src/1.json");
+void MaskGeneratorView::CreateJsonList(QStringList filelist) {
+    QFile file(JsonFile);
     if(!file.open(QIODevice::ReadWrite)) {
-        qDebug() << "File open error";
-    } else {
-        qDebug() <<"File open!";
+        qDebug() << "error when open json: " << JsonFile;
+        return;
     }
 
-    // 清空文件中的原有内容
-    file.resize(0);
-
-
+    file.resize(0); // 清空文件中的原有内容
     QJsonObject root;//根元素
-
     QJsonObject metaobj;//元数据
-    metaobj.insert("num",900);
-    metaobj.insert("current",5);
-    //metaobj["num"]="fuck";
+    metaobj.insert("num",filelist.size());
+    metaobj.insert("current",0);
     root.insert("metadata",metaobj);
 
     QJsonArray imgArray;
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < filelist.size(); i++) {
         QJsonObject imgObject;
-        imgObject.insert("id", QString::number(i+1));
-        imgObject.insert("name", QString::number(i+1));
-        imgObject.insert("mask", i+18);
-        imgObject.insert("label", QDateTime::currentDateTime().toString());
+        imgObject.insert("id", QString::number(i));
+        imgObject.insert("name", filelist[i]);
+        imgObject.insert("mask", "");
+        imgObject.insert("label", "");
         imgArray.append(imgObject);
     }
     root.insert("imagelist",imgArray);
@@ -184,29 +203,100 @@ void MaskGeneratorView::CreateXmlList() {
 
     file.write(rootDoc.toJson());
     file.close();
+}
+/*
+ * 向json中记录当前文件已经处理完
+ */
+void MaskGeneratorView::SaveCurrent(QString maskfilename, QString label) {
+    QFile file(JsonFile);
+    if(!file.open(QIODevice::ReadWrite)) {
+        qDebug() << "error when open json: " << JsonFile;
+        return;
+    }
+    QByteArray allData = file.readAll();
 
+    QJsonDocument jdoc(QJsonDocument::fromJson(allData));
+    QJsonObject RootObject = jdoc.object();
 
-    qDebug() << "Write to file";
+    QJsonValueRef ImageListJsonRef = RootObject.find("imagelist").value();
+    QJsonArray ImageListJson =ImageListJsonRef.toArray();
 
-//    QFile loadFile("E:/CLion/MaskGenerator/src/1.json");
-//    if(!loadFile.open(QIODevice::ReadOnly)) {
-//        qDebug() << "File open error";
-//    } else {
-//        qDebug() <<"File open!";
-//    }
-//
-//    QByteArray allData = loadFile.readAll();
-//    loadFile.close();
-//
-//    QJsonParseError json_error;
-//    QJsonDocument jsonDoc_read(QJsonDocument::fromJson(allData, &json_error));
-//
-//    if(json_error.error != QJsonParseError::NoError)
-//    {
-//        qDebug() << "json error!";
-//        return;
-//    }
-//    QJsonObject rootObj = jsonDoc.object();
+    QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
+    QJsonObject MetaDataObj = MetaDateRef.toObject();
+    int current = MetaDataObj["current"].toInt();
 
+    //修改list中的下标为current的项
+    QJsonArray::iterator ArrayIterator = ImageListJson.begin();
+    QJsonValueRef targetValueRef = ArrayIterator[current];
+    QJsonObject targetObject =targetValueRef.toObject();
+    targetObject["mask"]= maskfilename;
+    targetObject["label"] = label;
+    targetValueRef=targetObject;
+    ImageListJsonRef=ImageListJson;
 
+    //修改current的值
+    MetaDataObj["current"]=current+1;
+    MetaDateRef=MetaDataObj;
+
+    //写回到文件
+    file.resize(0);
+    file.write(QJsonDocument(RootObject).toJson());
+    file.close();
+}
+/*
+ * 获取当前要处理的图片文件名
+ */
+QString MaskGeneratorView::getCurrentImageName() {
+    QFile file(JsonFile);
+    if(!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "error when open json: " << JsonFile;
+        return QString::null;
+    }
+    QByteArray allData = file.readAll();
+    file.close();
+    QJsonDocument jdoc(QJsonDocument::fromJson(allData));
+    QJsonObject RootObject = jdoc.object();
+
+    QJsonValueRef ImageListJsonRef = RootObject.find("imagelist").value();
+    QJsonArray ImageListJson =ImageListJsonRef.toArray();
+
+    QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
+    QJsonObject MetaDataObj = MetaDateRef.toObject();
+    int current = MetaDataObj["current"].toInt();
+
+    QJsonArray::iterator ArrayIterator = ImageListJson.begin();
+    QJsonValueRef targetValueRef = ArrayIterator[current];
+    QJsonObject targetObject =targetValueRef.toObject();
+
+    return targetObject["name"].toString();
+}
+/*
+ * 总开关
+ */
+void MaskGeneratorView::MasterSwitch(bool status) {
+
+}
+/*
+ * 校验Json文件
+ */
+bool MaskGeneratorView::CheckJson() {
+    QFile file(JsonFile);
+    if(!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "error when open json: " << JsonFile;
+        return false;
+    }
+    try {
+        QByteArray allData = file.readAll();
+        file.close();
+        QJsonDocument jdoc(QJsonDocument::fromJson(allData));
+        QJsonObject RootObject = jdoc.object();
+
+        if(!RootObject.contains("imagelist")||!RootObject.contains("metadata")){
+           return false;
+        }
+    }catch (...){
+        return false;
+    }
+
+    return true;
 }
