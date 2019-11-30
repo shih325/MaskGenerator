@@ -4,11 +4,63 @@
 
 #include "History.h"
 /*
+ * ==================
+ * class HistoryData
+ * ==================
+ */
+
+/*
+ * 构造函数
+ */
+HistoryData::HistoryData() {
+    this->threshold = 0;
+    this->maskImg = nullptr;
+    this->workingImg = nullptr;
+}
+HistoryData::HistoryData(int value,cv::Mat * working,cv::Mat * mask) {
+    this->threshold = value;
+    this->maskImg = mask;
+    this->workingImg = working;
+}
+/*
+ * 析构函数
+ */
+HistoryData::~HistoryData() {
+    delete this->maskImg;
+    delete this->workingImg;
+}
+/*
+ * 拷贝构造函数
+ */
+HistoryData::HistoryData(const HistoryData &data) {
+    this->threshold = data.threshold;
+    this->maskImg = new cv::Mat(*data.maskImg);
+    this->workingImg = new cv::Mat(*data.workingImg);
+}
+/*
+ * 拷贝赋值运算符
+ */
+HistoryData &HistoryData::operator=(const HistoryData &data) {
+    this->threshold = data.threshold;
+    this->maskImg = new cv::Mat(*data.maskImg);
+    this->workingImg = new cv::Mat(*data.workingImg);
+    return *this;
+}
+
+
+
+/*
+ * ================================
+ * class History
+ * ================================
+ */
+
+/*
  * 构造函数
  */
 History::History() {
-    this->stackA =new std::stack<cv::Mat>();
-    this->stackB =new std::stack<cv::Mat>();
+    this->stackA =new std::stack<HistoryData*>();
+    this->stackB =new std::stack<HistoryData*>();
     /*
      * A栈顶端是当前显示在屏幕上的结果
      */
@@ -23,12 +75,14 @@ History::~History() {
 /*
  * 添加一个新操作,压入A栈,如果B栈非空,则删空它
  */
-void History::add(cv::Mat img) {
-    this->stackA->push(img);
-    if(!this->stackB->empty()){
-        delete this->stackB;
-        this->stackB = new std::stack<cv::Mat>();
+void History::add(HistoryData* data) {
+    this->stackA->push(data);
+    while (!this->stackB->empty()){
+        delete this->stackB->top();
+        this->stackB->pop();
     }
+    delete this->stackB;
+    this->stackB = new std::stack<HistoryData*>();
 }
 /*
  * 撤销
@@ -37,13 +91,13 @@ void History::add(cv::Mat img) {
  * 返回A栈当前顶端元素
  *
  */
-bool History::undo(cv::Mat *img) {
+bool History::undo(HistoryData* data) {
     if(this->stackA->empty()){
         return false;
     }else{
         this->stackB->push(stackA->top());
         this->stackA->pop();
-        *img = this->stackA->top();
+        *data = *this->stackA->top();
         return true;
     }
 }
@@ -53,13 +107,16 @@ bool History::undo(cv::Mat *img) {
  * B栈弹出顶端元素
  *
  */
-bool History::redo(cv::Mat *img) {
+bool History::redo(HistoryData* data) {
     if(this->stackB->empty()){
         return false;
     }else{
-        *img = this->stackB->top();
-        this->stackA->push(*img);
+        *data = *this->stackB->top();
+        this->stackA->push(data);
         this->stackB->pop();
     }
     return true;
 }
+
+
+

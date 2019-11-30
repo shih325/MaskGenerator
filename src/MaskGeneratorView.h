@@ -8,6 +8,9 @@
 #include "ui_MaskGenerator.h"
 #include "opencv2/opencv.hpp"
 #include "History.h"
+#include <QImage>
+#include "MyGraphicsView.h"
+
 
 class MaskGeneratorView :public QMainWindow{
     Q_OBJECT
@@ -20,16 +23,25 @@ private:
 
     cv::Mat * target;      //当前正在标定的源图片(不更改)
     cv::Mat * working_img; //中间结果(更新,不保存到文件,需要历史记录)
-    cv::Mat * mask;        //掩码(更新,保存到文件)
-    History * history;     //历史记录
+    cv::Mat * mask;        //掩码(更新,保存到文件,需要历史记录)
+    int threshold = 0;     //边缘检测阈值(需要历史记录)
 
+    History * history;     //用于记录历史以及支持撤销重做功能
 
-    void CreateJsonList(QStringList filelist);//初始化构造json文件
-    void SaveCurrent(QString maskfilename,QString label); //向json中记录当前图片已经处理完
-    QString getCurrentImageName();  //获取当前要处理的文件名
-    bool CheckJson();
-    void MasterSwitch(bool status); //程序功能总开关,用于控制界面控件的可访问性.
-    bool loadimg(QString imgFileName);  //加载图片文件
+    QImage * qimage_to_show;
+    MyGraphicsView * m_GraphicsView = nullptr;
+    MyQGraphicsScene * m_GraphicsScene = nullptr;
+	MyQGraphicsPixmapItem * m_GraphicsItem = nullptr;
+    float scaleFactor = 30;
+
+    void CreateJsonList(QStringList filelist);              //初始化构造json文件
+    void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
+    QString getCurrentImageName();                          //获取当前要处理的文件名
+    bool CheckJson();                                       //校验json文件
+    void MasterSwitch(bool status);                         //程序功能总开关,用于控制界面控件的可访问性.
+    bool JobStart();                                        //加载第一章图片,初始化相关的变量,开始工作
+    void workingImgRefresh();                               //刷新工作图片
+    void showMat(cv::Mat img);                              //把Mat显示到UI上
 public slots:
     void onActionTriggered_OpenFolder();
     void onActionTriggered_OpenFile();
@@ -49,7 +61,10 @@ public slots:
     void onActionTriggered_About();
 
     void onActionTriggered_Test();
-
+    void onMouseWheelZoom(int delta);
+	
+    void onValueChanged_threshold(int value);
+	void onMouseLeftDown(int x, int y);
 };
 
 

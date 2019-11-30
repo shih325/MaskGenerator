@@ -18,7 +18,9 @@ void onMouse(int event, int x, int y, int flags, void* param) {
     cv::Rect ccomp;
     flags = 4 | 0 | (255 << 8);
 	switch (event) {
-		case cv::EVENT_LBUTTONDOWN: floodFill(fill_mask_img, mask_img, seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
+		case cv::EVENT_LBUTTONDOWN:
+		    floodFill(fill_mask_img,
+		            mask_img, seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
 		// case EVENT_RBUTTONDOWN: exit(0);
 	}
 	imshow("flood fill", fill_mask_img);

@@ -71,7 +71,7 @@ QImage Tools::cvMat2QImage(const cv::Mat &mat) {
  */
 cv::Mat Tools::QImage2cvMat(QImage image) {
     cv::Mat mat;
-    //qDebug() << image.format();
+    //qDebug() << qimage_to_show.format();
     switch (image.format())
     {
         case QImage::Format_ARGB32:
@@ -102,7 +102,7 @@ void Tools::ShowImageOnUi(cv::Mat &img, QGraphicsScene *sense, QGraphicsView *vi
     view->update();
 }
 /*
-* 创建并返回idle image
+* 创建并返回idle qimage_to_show
 */
 QImage Tools::getDefaultImage() {
     //图片上的字符串，例如 HELLO

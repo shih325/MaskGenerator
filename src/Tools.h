@@ -12,11 +12,7 @@
 #include <QGraphicsView>
 
 class Tools {
-    /*
-	 * cv::Mat转换为QImage
-	 */
-    static QImage cvMat2QImage(const cv::Mat& mat);
-
+public:
     /*
      * QImage转换为cv::Mat
      */
@@ -28,9 +24,14 @@ class Tools {
     static void ShowImageOnUi(cv::Mat& img, QGraphicsScene*sense, QGraphicsView* view);
 
     /*
-    * 创建并返回idle image
+    * 创建并返回idle qimage_to_show
     */
     static QImage getDefaultImage();
+
+    /*
+    * cv::Mat转换为QImage
+    */
+    static QImage cvMat2QImage(const cv::Mat& mat);
 };
 
 

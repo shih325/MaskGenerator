@@ -14,5 +14,6 @@
         <file>resource/undo.ico</file>
         <file>resource/setting.ico</file>
         <file>resource/test.ico</file>
+        <file>resource/main.ico</file>
     </qresource>
 </RCC>

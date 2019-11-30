@@ -14,8 +14,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMessageBox>
-#include <QDateTime>
-
+#include <QGraphicsScene>
+#include <QPixmap>
+#include "Tools.h"
 #include "Utils.h"
 /*
  * 1. 直接打开的图片格式:png,jpg,jpeg,bmp,tif
@@ -26,19 +27,28 @@
  */
 MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
 {
+    //TODO:add custom inits.
+	this->qimage_to_show = new QImage();
+	this->history = new History();
     //TODO:add custom ui setup code.
     ui.setupUi(this);
+    this->m_GraphicsView = new MyGraphicsView();
+    ui.imgLayout->addWidget(m_GraphicsView);
+    connect(m_GraphicsView, SIGNAL(mouseWheelZoom(int)), this, SLOT(onMouseWheelZoom(int)));
+	
     //接收拖放
     setAcceptDrops(true);
     MasterSwitch(false);
 }
 /*
  * Action:打开文件夹
- * 打开文件夹,列出文件夹下的所有文件
- * 如果存在列表文件,则读取列表文件,否则创建列表文件
- * 然后显示尚未处理的第一张图片
  */
 void MaskGeneratorView::onActionTriggered_OpenFolder() {
+    /*
+     * 打开文件夹,列出文件夹下的所有文件
+     * 如果存在列表文件,则读取列表文件,否则创建列表文件
+     * 然后显示尚未处理的第一张图片
+     */
     //打开文件夹
     QFileDialog * fileDialog = new QFileDialog(this);
     fileDialog->setWindowTitle(QStringLiteral("Select the folder where you want to mark pictures"));
@@ -71,6 +81,7 @@ void MaskGeneratorView::onActionTriggered_OpenFolder() {
                 CreateJsonList(ImageList);
                 //允许程序的相关功能使用
                 MasterSwitch(true);
+                JobStart();
             }
         }
 
@@ -91,6 +102,7 @@ void MaskGeneratorView::onActionTriggered_OpenFile() {
         srcpath=fileInfo.absolutePath();
         if(CheckJson()){
             MasterSwitch(true);
+            JobStart();
         }else{
             QMessageBox message(QMessageBox::NoIcon, "error!", "Unknown JSON file!");
             message.exec();
@@ -302,16 +314,106 @@ bool MaskGeneratorView::CheckJson() {
     return true;
 }
 /*
- * 加载图片准备开工
- *
+ * 加载第一章图片,初始化相关的变量,开始工作
  */
-bool MaskGeneratorView::loadimg(QString imgFileName) {
-    return false;
+bool MaskGeneratorView::JobStart() {
+    //获取当前图片文件名
+    QString imgfilename = getCurrentImageName();
+    this->target = new cv::Mat(cv::imread((srcpath+"/"+imgfilename).toStdString()));
+    if(this->target->empty()){
+        return false;
+    }
+    //给working和mask赋值
+    this->working_img=new cv::Mat(*this->target);
+    this->mask = new cv::Mat(cv::Mat::zeros(this->target->rows+2, this->target->cols+2, CV_8UC1));
+    //显示working
+    showMat(*working_img);
+    //历史记录初始化
+    auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
+    this->history->add(initData);
+    return true;
 }
 /*
  * Action: 测试
  */
 void MaskGeneratorView::onActionTriggered_Test() {
-    cv::Mat src = cv::imread("../Example/images/im0041.png");
+    cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
     myDrawContours(src);
+}
+/*
+ * 响应graphics区域的鼠标滚轮动作:缩放图片
+ */
+void MaskGeneratorView::onMouseWheelZoom(int delta) {
+    //qDebug() << QString::fromStdString(std::to_string(delta));
+    if (delta > 0 && scaleFactor >= 0)
+    {
+        scaleFactor += 5;
+        QMatrix old_matrix;
+        old_matrix = m_GraphicsView->matrix();
+        m_GraphicsView->resetMatrix();
+        m_GraphicsView->translate(old_matrix.dx(), old_matrix.dy());
+        m_GraphicsView->scale(scaleFactor / 100.0, scaleFactor / 100.0);
+    }
+    else if (delta < 0 && scaleFactor >= 0)
+    {
+        scaleFactor -= 5;
+        QMatrix old_matrix;
+        old_matrix = m_GraphicsView->matrix();
+        m_GraphicsView->resetMatrix();
+        m_GraphicsView->translate(old_matrix.dx(), old_matrix.dy());
+        m_GraphicsView->scale(scaleFactor / 100.0, scaleFactor / 100.0);
+    }
+    else if (scaleFactor < 0) {
+        scaleFactor = 0.0;
+    }
+}
+/*
+ * 显示图片
+ * 
+ * 这里有内存泄漏!
+ */
+void MaskGeneratorView::showMat(cv::Mat img) {
+    *qimage_to_show = Tools::cvMat2QImage(img);
+    m_GraphicsScene = new MyQGraphicsScene();
+	m_GraphicsItem = new MyQGraphicsPixmapItem();
+	connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
+	m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
+    //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
+	m_GraphicsScene->addItem(m_GraphicsItem);
+    m_GraphicsView->setScene(m_GraphicsScene);
+    m_GraphicsView->show();
+}
+/*
+ * 响应阈值滑动条的运动
+ */
+void MaskGeneratorView::onValueChanged_threshold(int value) {
+    if(this->threshold!=value){
+        this->threshold = value;
+        workingImgRefresh();
+    }
+}
+/*
+ * 响应图片上的左键按下事件
+ */
+void MaskGeneratorView::onMouseLeftDown(int x, int y)
+{
+	qDebug("catch!:x=%d,y=%d",x,y);
+}
+
+/*
+ * 刷新工作图片
+ */
+void MaskGeneratorView::workingImgRefresh() {
+    //原始图片灰度化
+    cv::Mat gray,threshold_img;
+    cv::cvtColor(*this->target, gray, cv::COLOR_RGB2GRAY);
+    //使用当前的threshold进行处理
+
+    cv::threshold(gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
+    std::vector<std::vector<cv::Point> > contours;
+    cv::findContours(threshold_img, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
+    //workingimg赋值为原始图加上边缘
+	*this->working_img = this->target->clone();//要深拷贝,防止元数据污染
+    drawContours(*this->working_img, contours, -1, cv::Scalar(0, 255,0), 1);
+    showMat(*working_img);
 }
