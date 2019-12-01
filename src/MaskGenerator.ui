@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>973</width>
+    <width>860</width>
     <height>609</height>
    </rect>
   </property>
@@ -56,7 +56,7 @@
      </widget>
     </item>
     <item row="0" column="2" rowspan="2">
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="groupBox_history">
       <property name="maximumSize">
        <size>
         <width>420</width>
@@ -67,8 +67,23 @@
        <string>历史记录</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
-        <widget class="QListWidget" name="listWidget_history"/>
+        <layout class="QGridLayout" name="historyLayout"/>
        </item>
       </layout>
      </widget>
@@ -245,7 +260,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>973</width>
+     <width>860</width>
      <height>23</height>
     </rect>
    </property>

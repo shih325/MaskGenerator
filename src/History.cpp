@@ -46,6 +46,12 @@ HistoryData &HistoryData::operator=(const HistoryData &data) {
     this->workingImg = new cv::Mat(data.workingImg->clone());
     return *this;
 }
+/*
+ * clone
+ */
+HistoryData *HistoryData::clone() {
+    return new HistoryData(this->threshold,this->workingImg,this->maskImg);
+}
 
 
 
@@ -95,7 +101,7 @@ bool History::undo(HistoryData* data) {
     if(this->stackA->size()<=1){//
         return false;
     }else{
-        this->stackB->push(stackA->top());
+        this->stackB->push(stackA->top()->clone());
         this->stackA->pop();
         data->maskImg = this->stackA->top()->maskImg;
 		data->workingImg = this->stackA->top()->workingImg;
@@ -117,7 +123,7 @@ bool History::redo(HistoryData* data) {
 		data->maskImg = this->stackB->top()->maskImg;
 		data->workingImg = this->stackB->top()->workingImg;
 		data->threshold = this->stackB->top()->threshold;
-        this->stackA->push(data);
+        this->stackA->push(data->clone());
         this->stackB->pop();
     }
     return true;

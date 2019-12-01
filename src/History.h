@@ -16,6 +16,7 @@ public:
     HistoryData(int value,cv::Mat * working,cv::Mat * mask);
     ~HistoryData();
     HistoryData(const HistoryData& data);
+    HistoryData * clone ();
     HistoryData &operator=(const HistoryData& data);
 
     cv::Mat * workingImg;

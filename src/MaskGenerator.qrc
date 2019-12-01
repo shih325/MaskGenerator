@@ -15,5 +15,8 @@
         <file>resource/setting.ico</file>
         <file>resource/test.ico</file>
         <file>resource/main.ico</file>
+        <file>resource/gray.ico</file>
+        <file>resource/red.ico</file>
+        <file>resource/green.ico</file>
     </qresource>
 </RCC>

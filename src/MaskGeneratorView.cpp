@@ -35,7 +35,11 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
     this->m_GraphicsView = new MyGraphicsView();
     ui.imgLayout->addWidget(m_GraphicsView);
     connect(m_GraphicsView, SIGNAL(mouseWheelZoom(int)), this, SLOT(onMouseWheelZoom(int)));
-	
+
+    this->m_HistoryLogWidget=new HistoryLogWidget(this);
+    ui.historyLayout->addWidget(m_HistoryLogWidget);
+    m_HistoryLogWidget->add("test");
+    m_HistoryLogWidget->show();
     //接收拖放
     setAcceptDrops(true);
     MasterSwitch(false);
@@ -355,14 +359,6 @@ bool MaskGeneratorView::JobStart() {
 void MaskGeneratorView::onActionTriggered_Test() {
     /*cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
     myDrawContours(src);*/
-	int i = 0;
-	while(!this->history->stackA->empty())
-	{
-		std::cout << this->history->stackA->top()->workingImg << std::endl;
-		cv::imshow(std::to_string(i), *this->history->stackA->top()->workingImg);
-		i++;
-		this->history->stackA->pop();
-	}
 }
 /*
  * 响应graphics区域的鼠标滚轮动作:缩放图片

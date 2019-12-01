@@ -10,7 +10,7 @@
 #include "History.h"
 #include <QImage>
 #include "MyGraphicsView.h"
-
+#include "HistoryLogWidget.h"
 
 class MaskGeneratorView :public QMainWindow{
     Q_OBJECT
@@ -32,7 +32,8 @@ private:
     MyGraphicsView * m_GraphicsView = nullptr;
     MyQGraphicsScene * m_GraphicsScene = nullptr;
 	MyQGraphicsPixmapItem * m_GraphicsItem = nullptr;
-    float scaleFactor = 30;
+    float scaleFactor = 100;
+    HistoryLogWidget * m_HistoryLogWidget = nullptr;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
