@@ -127,13 +127,29 @@ void MaskGeneratorView::onActionTriggered_Exit() {
  * Action:撤销
  */
 void MaskGeneratorView::onActionTriggered_UnDo() {
+	HistoryData * history_data=new HistoryData;
+    if(this->history->undo(history_data)){
+        this->threshold=history_data->threshold;
+        ui.verticalSlider_threshold->setValue(this->threshold);
 
+        *this->working_img=*history_data->workingImg;
+        *this->mask=*history_data->maskImg;
+        showMat(*this->working_img);
+    }
 }
 /*
  * Action:重做
  */
 void MaskGeneratorView::onActionTriggered_ReDo() {
+	HistoryData * history_data = new HistoryData;
+	if (this->history->redo(history_data)) {
+		this->threshold = history_data->threshold;
+		ui.verticalSlider_threshold->setValue(this->threshold);
 
+		*this->working_img = *history_data->workingImg;
+		*this->mask = *history_data->maskImg;
+		showMat(*this->working_img);
+	}
 }
 /*
  * Action:前一张
@@ -324,7 +340,7 @@ bool MaskGeneratorView::JobStart() {
         return false;
     }
     //给working和mask赋值
-    this->working_img=new cv::Mat(*this->target);
+    this->working_img=new cv::Mat(this->target->clone());
     this->mask = new cv::Mat(cv::Mat::zeros(this->target->rows+2, this->target->cols+2, CV_8UC1));
     //显示working
     showMat(*working_img);
@@ -337,8 +353,16 @@ bool MaskGeneratorView::JobStart() {
  * Action: 测试
  */
 void MaskGeneratorView::onActionTriggered_Test() {
-    cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
-    myDrawContours(src);
+    /*cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
+    myDrawContours(src);*/
+	int i = 0;
+	while(!this->history->stackA->empty())
+	{
+		std::cout << this->history->stackA->top()->workingImg << std::endl;
+		cv::imshow(std::to_string(i), *this->history->stackA->top()->workingImg);
+		i++;
+		this->history->stackA->pop();
+	}
 }
 /*
  * 响应graphics区域的鼠标滚轮动作:缩放图片
@@ -398,6 +422,16 @@ void MaskGeneratorView::onValueChanged_threshold(int value) {
 void MaskGeneratorView::onMouseLeftDown(int x, int y)
 {
 	qDebug("catch!:x=%d,y=%d",x,y);
+    cv::Point seed = cv::Point(x, y);
+    cv::Scalar fill_color = cv::Scalar(0, 0, 255);
+    cv::Rect ccomp;
+    int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
+    //working_img 和 mask都会被改
+    floodFill(*this->working_img,*this->mask,
+            seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
+    showMat(*this->working_img);
+    auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
+    this->history->add(history_data);
 }
 
 /*
@@ -408,6 +442,7 @@ void MaskGeneratorView::workingImgRefresh() {
     cv::Mat gray,threshold_img;
     cv::cvtColor(*this->target, gray, cv::COLOR_RGB2GRAY);
     //使用当前的threshold进行处理
+
 
     cv::threshold(gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
     std::vector<std::vector<cv::Point> > contours;

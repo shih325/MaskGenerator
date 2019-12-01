@@ -19,8 +19,8 @@ HistoryData::HistoryData() {
 }
 HistoryData::HistoryData(int value,cv::Mat * working,cv::Mat * mask) {
     this->threshold = value;
-    this->maskImg = mask;
-    this->workingImg = working;
+    this->maskImg = new cv::Mat(mask->clone());
+    this->workingImg = new cv::Mat(working->clone());
 }
 /*
  * 析构函数
@@ -34,16 +34,16 @@ HistoryData::~HistoryData() {
  */
 HistoryData::HistoryData(const HistoryData &data) {
     this->threshold = data.threshold;
-    this->maskImg = new cv::Mat(*data.maskImg);
-    this->workingImg = new cv::Mat(*data.workingImg);
+    this->maskImg = new cv::Mat(data.maskImg->clone());
+    this->workingImg = new cv::Mat(data.workingImg->clone());
 }
 /*
  * 拷贝赋值运算符
  */
 HistoryData &HistoryData::operator=(const HistoryData &data) {
     this->threshold = data.threshold;
-    this->maskImg = new cv::Mat(*data.maskImg);
-    this->workingImg = new cv::Mat(*data.workingImg);
+    this->maskImg = new cv::Mat(data.maskImg->clone());
+    this->workingImg = new cv::Mat(data.workingImg->clone());
     return *this;
 }
 
@@ -92,12 +92,14 @@ void History::add(HistoryData* data) {
  *
  */
 bool History::undo(HistoryData* data) {
-    if(this->stackA->empty()){
+    if(this->stackA->size()<=1){//
         return false;
     }else{
         this->stackB->push(stackA->top());
         this->stackA->pop();
-        *data = *this->stackA->top();
+        data->maskImg = this->stackA->top()->maskImg;
+		data->workingImg = this->stackA->top()->workingImg;
+		data->threshold = this->stackA->top()->threshold;
         return true;
     }
 }
@@ -111,7 +113,10 @@ bool History::redo(HistoryData* data) {
     if(this->stackB->empty()){
         return false;
     }else{
-        *data = *this->stackB->top();
+        //data = this->stackB->top();
+		data->maskImg = this->stackB->top()->maskImg;
+		data->workingImg = this->stackB->top()->workingImg;
+		data->threshold = this->stackB->top()->threshold;
         this->stackA->push(data);
         this->stackB->pop();
     }

@@ -27,7 +27,7 @@ class History {
 public:
     History();
     ~History();
-private:
+//private:
     std::stack<HistoryData*> * stackA;
     std::stack<HistoryData*> * stackB;
 
