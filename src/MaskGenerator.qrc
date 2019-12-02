@@ -21,5 +21,9 @@
         <file>resource/one.ico</file>
         <file>resource/two.ico</file>
         <file>resource/three.ico</file>
+        <file>resource/full_moon.ico</file>
+        <file>resource/half_moon.ico</file>
+        <file>resource/new_moon.ico</file>
+        <file>resource/help.ico</file>
     </qresource>
 </RCC>

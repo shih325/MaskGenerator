@@ -36,6 +36,8 @@ private:
     float scaleFactor = 100;
     HistoryLogWidget * m_HistoryLogWidget = nullptr;
     QLabel * m_PosLabel = nullptr;
+    enum DISPLAY_MODE {ORIGIN,MASK};
+    DISPLAY_MODE m_DisplayMode = ORIGIN;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
@@ -45,6 +47,7 @@ private:
     bool JobStart();                                        //加载第一章图片,初始化相关的变量,开始工作
     void workingImgRefresh();                               //刷新工作图片
     void showMat(cv::Mat img);                              //把Mat显示到UI上
+    void updateUI();                                        //更新ui上图像显示区域
 public slots:
     void onActionTriggered_OpenFolder();
     void onActionTriggered_OpenFile();
@@ -57,7 +60,6 @@ public slots:
 
     void onActionTriggered_ShowOrigin();
     void onActionTriggered_ShowMask();
-    void onActionTriggered_ShowAlpha();
 
     void onActionTriggered_Settings();
     void onActionTriggered_Help();
