@@ -36,6 +36,8 @@ public:
     void add(HistoryData* data);
     bool undo(HistoryData* data);
     bool redo(HistoryData* data);
+    void savedATop();               // saved the top element of stack A, prepare for clear();
+    void clear();
 };
 
 

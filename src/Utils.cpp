@@ -57,7 +57,7 @@ void myDrawContours(cv::Mat src) {
     img = src;
     mask_img = cv::Mat::zeros(img.rows+2, img.cols+2, CV_8UC1);
     cv::cvtColor(img, gray, cv::COLOR_RGB2GRAY);
-    mask_img_rgb = cv::Mat(img.rows, img.cols, CV_8UC3, Scalar(255, 0, 0));
+    mask_img_rgb = cv::Mat(img.rows, img.cols, CV_8UC3, cv::Scalar(255, 0, 0));
     cv::namedWindow("flood fill");
     cv::imshow("flood fill", img);
     cv::imshow("mask", mask_img);

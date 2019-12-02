@@ -129,5 +129,46 @@ bool History::redo(HistoryData* data) {
     return true;
 }
 
+/*
+ * keep the top element of stack A, as saved mask image, then prepare for clear();
+ */
+void History::savedATop() {
+    while (!this->stackB->empty()){
+        delete this->stackB->top();
+        this->stackB->pop();
+    }
+//    delete this->stackB;
+//    this->stackB = new std::stack<HistoryData*>();
+    this->stackB->push(stackA->top()->clone());
+    while (!this->stackA->empty()){
+        delete this->stackA->top();
+        this->stackA->pop();
+    }
+//    delete this->stackA;
+//    this->stackA = new std::stack<HistoryData*>();
+    this->stackA->push(stackB->top()->clone());
+    delete this->stackB->top();
+    this->stackB->pop();
+}
 
-
+/*
+ * clear the history
+ */
+void History::clear() {
+    while (!this->stackB->empty()){
+        delete this->stackB->top();
+        this->stackB->pop();
+    }
+    delete this->stackB;
+    this->stackB = new std::stack<HistoryData*>();
+//    this->stackB->push(stackA->top()->clone());
+    while (!this->stackA->empty()){
+        delete this->stackA->top();
+        this->stackA->pop();
+    }
+    delete this->stackA;
+    this->stackA = new std::stack<HistoryData*>();
+    // this->stackA->push(stackB->top()->clone());
+    // delete this->stackB->top();
+    // this->stackB->pop();
+}

@@ -125,9 +125,29 @@ void MaskGeneratorView::onActionTriggered_OpenFile() {
  * Action:保存
  */
 void MaskGeneratorView::onActionTriggered_Save() {
-    SaveCurrent("maskfilename","this is a label");
-
-    qDebug()<<getCurrentImageName();
+//    QString savedMaskName = getCurrentImageName().split('.')[0]+"_mask.png";
+//    QFileInfo prefix(srcpath);
+//    std::string savedMaskPath = (prefix.absolutePath()+"/masks/"+savedMaskName).toStdString();
+//    cv::Mat _mask=this->mask->clone();
+//    auto _mask_orgi_size = _mask(cv::Rect(1,1, this->target->cols, this->target->rows));
+////    if ((prefix.absolutePath()+"/masks/"+savedMaskName).toStdString().empty()) {
+//    if (savedMaskPath.empty()) {
+//        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
+//        message.exec();
+//        return ;
+//    }
+//    if (_mask_orgi_size.empty()) {
+//        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: mask is empty!");
+//        message.exec();
+//        return ;
+//    }
+//    SaveCurrent(savedMaskName, ui.textEdit_label->toPlainText());
+//    cv::imwrite(savedMaskPath, _mask_orgi_size);
+    saveMaskImage();
+    this->history->savedATop();
+    m_HistoryLogWidget->clear();
+    JobStart();
+//    qDebug()<<getCurrentImageName();
 }
 /*
  * Action:退出
@@ -169,13 +189,73 @@ void MaskGeneratorView::onActionTriggered_ReDo() {
  * Action:前一张
  */
 void MaskGeneratorView::onActionTriggered_Prior() {
-
+    if (m_HistoryLogWidget->getCurrentValue() != 0) {
+        QMessageBox msgBox;
+        msgBox.setText("The document has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret) {
+            case QMessageBox::Save:
+                saveMaskImage();
+                break;
+            case QMessageBox::Discard:
+                break;
+            case QMessageBox::Cancel:
+                break;
+            default:
+                break;
+        }
+        this->m_Direction = PREV;
+        setCurrentValue();
+        this->history->savedATop();
+        m_HistoryLogWidget->clear();
+        JobStart();
+    }
+    else {
+        this->m_Direction = PREV;
+        setCurrentValue();
+        this->history->savedATop();
+        m_HistoryLogWidget->clear();
+        JobStart();
+    }
 }
 /*
  * Action:下一张
  */
 void MaskGeneratorView::onActionTriggered_Next() {
-
+    if (m_HistoryLogWidget->getCurrentValue() != 0) {
+        QMessageBox msgBox;
+        msgBox.setText("The document has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret) {
+            case QMessageBox::Save:
+                saveMaskImage();
+                break;
+            case QMessageBox::Discard:
+                break;
+            case QMessageBox::Cancel:
+                break;
+            default:
+                break;
+        }
+        this->m_Direction = NEXT;
+        setCurrentValue();
+        this->history->savedATop();
+        m_HistoryLogWidget->clear();
+        JobStart();
+    }
+    else {
+        this->m_Direction = NEXT;
+        setCurrentValue();
+        this->history->savedATop();
+        m_HistoryLogWidget->clear();
+        JobStart();
+    }
 }
 /*
  * Action:显示原图
@@ -267,6 +347,7 @@ void MaskGeneratorView::SaveCurrent(QString maskfilename, QString label) {
     QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
     QJsonObject MetaDataObj = MetaDateRef.toObject();
     int current = MetaDataObj["current"].toInt();
+    int total = MetaDataObj["num"].toInt();
 
     //修改list中的下标为current的项
     QJsonArray::iterator ArrayIterator = ImageListJson.begin();
@@ -278,7 +359,9 @@ void MaskGeneratorView::SaveCurrent(QString maskfilename, QString label) {
     ImageListJsonRef=ImageListJson;
 
     //修改current的值
-    MetaDataObj["current"]=current+1;
+    if (current == total-1) MetaDataObj["current"] = current;
+    else MetaDataObj["current"]=current+1;
+    // MetaDataObj["current"]=current+1;
     MetaDateRef=MetaDataObj;
 
     //写回到文件
@@ -293,7 +376,7 @@ QString MaskGeneratorView::getCurrentImageName() {
     QFile file(JsonFile);
     if(!file.open(QIODevice::ReadOnly)) {
         qDebug() << "error when open json: " << JsonFile;
-        return QString::null;
+        return QString();
     }
     QByteArray allData = file.readAll();
     file.close();
@@ -367,7 +450,9 @@ bool MaskGeneratorView::JobStart() {
     updateUI();
     //历史记录初始化
     auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
+    this->history->clear();
     this->history->add(initData);
+    // m_HistoryLogWidget->clear();
     m_HistoryLogWidget->add("Open img");
     return true;
 }
@@ -516,4 +601,66 @@ void MaskGeneratorView::updateUI() {
     }
 }
 
+void MaskGeneratorView::setCurrentValue() {
+    QFile file(JsonFile);
+    if(!file.open(QIODevice::ReadWrite)) {
+        qDebug() << "error when open json: " << JsonFile;
+        return;
+    }
+    QByteArray allData = file.readAll();
+
+    QJsonDocument jdoc(QJsonDocument::fromJson(allData));
+    QJsonObject RootObject = jdoc.object();
+
+    QJsonValueRef ImageListJsonRef = RootObject.find("imagelist").value();
+    QJsonArray ImageListJson =ImageListJsonRef.toArray();
+
+    QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
+    QJsonObject MetaDataObj = MetaDateRef.toObject();
+    int current = MetaDataObj["current"].toInt();
+    int total = MetaDataObj["num"].toInt();
+
+    //修改current的值
+    switch(this->m_Direction) {
+        case PREV:
+            // check the low boundary
+            if (current == 0) MetaDataObj["current"] = current;
+            else MetaDataObj["current"]=current-1;
+            break;
+        case NEXT:
+            // check the high boundary
+            if (current == total-1) MetaDataObj["current"] = current;
+            else MetaDataObj["current"]=current+1;
+            break;
+        default:
+            break;
+    }
+    MetaDateRef=MetaDataObj;
+
+    //写回到文件
+    file.resize(0);
+    file.write(QJsonDocument(RootObject).toJson());
+    file.close();
+}
+
+void MaskGeneratorView::saveMaskImage() {
+    QString savedMaskName = getCurrentImageName().split('.')[0]+"_mask.png";
+    QFileInfo prefix(srcpath);
+    std::string savedMaskPath = (prefix.absolutePath()+"/masks/"+savedMaskName).toStdString();
+    cv::Mat _mask=this->mask->clone();
+    auto _mask_orgi_size = _mask(cv::Rect(1,1, this->target->cols, this->target->rows));
+//    if ((prefix.absolutePath()+"/masks/"+savedMaskName).toStdString().empty()) {
+    if (savedMaskPath.empty()) {
+        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
+        message.exec();
+        return ;
+    }
+    if (_mask_orgi_size.empty()) {
+        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: mask is empty!");
+        message.exec();
+        return ;
+    }
+    SaveCurrent(savedMaskName, ui.textEdit_label->toPlainText());
+    cv::imwrite(savedMaskPath, _mask_orgi_size);
+}
 

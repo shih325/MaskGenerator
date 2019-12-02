@@ -12,7 +12,7 @@
  * 当前状态对应的记录前显示一个标志
  * 可以undo的记录显示为粗体
  * 可以redo的记录显示为斜体
- * 无论何时,调用addd都会导致可以redo的记录失效
+ * 无论何时,调用add都会导致可以redo的记录失效
  */
 class HistoryLogWidget :public QTableWidget{
     Q_OBJECT
@@ -22,6 +22,8 @@ public:
     void add(QString text);
     void redo();
     void undo();
+    void clear();
+    int getCurrentValue();
 private:
     std::vector<QTableWidgetItem* > itemList;
     int current;

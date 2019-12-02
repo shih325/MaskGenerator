@@ -5,6 +5,7 @@
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QAbstractItemView>
+#include <iostream>
 
 HistoryLogWidget::HistoryLogWidget(QWidget *parent) : QTableWidget(parent) {
     current = -1;//
@@ -86,4 +87,27 @@ void HistoryLogWidget::redo() {
         this->clearSelection();
         this->selectRow(current);
     }
+}
+
+/*
+ * clear the History Log Widget
+ */
+void HistoryLogWidget::clear() {
+    auto iter = itemList.begin();
+    int irow = itemList.size();
+    while(iter!=itemList.end()){
+        iter=itemList.erase(iter);
+        this->removeRow(irow);
+        // iter++;
+        irow--;
+        // std::cout << irow << std::endl;
+    }
+    current = -1;
+}
+
+/*
+ * get current value
+ */
+int HistoryLogWidget::getCurrentValue() {
+    return current;
 }

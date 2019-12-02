@@ -38,16 +38,20 @@ private:
     QLabel * m_PosLabel = nullptr;
     enum DISPLAY_MODE {ORIGIN,MASK};
     DISPLAY_MODE m_DisplayMode = ORIGIN;
+    enum DIRECTION {PREV, NEXT};                              // json 'current' value update direction;
+    DIRECTION m_Direction = NEXT;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
     QString getCurrentImageName();                          //获取当前要处理的文件名
+    void setCurrentValue();                                 // set 'current' value in json
     bool CheckJson();                                       //校验json文件
     void MasterSwitch(bool status);                         //程序功能总开关,用于控制界面控件的可访问性.
     bool JobStart();                                        //加载第一章图片,初始化相关的变量,开始工作
     void workingImgRefresh();                               //刷新工作图片
     void showMat(cv::Mat img);                              //把Mat显示到UI上
     void updateUI();                                        //更新ui上图像显示区域
+    void saveMaskImage();
 public slots:
     void onActionTriggered_OpenFolder();
     void onActionTriggered_OpenFile();

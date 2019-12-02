@@ -3,7 +3,7 @@
         {
             "id": "0",
             "label": "",
-            "mask": "",
+            "mask": "21_training_mask.png",
             "name": "21_training.tif"
         },
         {
@@ -15,7 +15,7 @@
         {
             "id": "2",
             "label": "",
-            "mask": "",
+            "mask": "23_training_mask.png",
             "name": "23_training.tif"
         },
         {
@@ -27,13 +27,13 @@
         {
             "id": "4",
             "label": "",
-            "mask": "",
+            "mask": "25_training_mask.png",
             "name": "25_training.tif"
         },
         {
             "id": "5",
             "label": "",
-            "mask": "",
+            "mask": "im0009_mask.png",
             "name": "im0009.png"
         },
         {
@@ -50,7 +50,7 @@
         }
     ],
     "metadata": {
-        "current": 6,
+        "current": 4,
         "num": 8
     }
 }
