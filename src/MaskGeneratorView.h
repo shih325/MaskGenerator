@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Anna on 2019/11/26.
 //
 
@@ -11,6 +11,7 @@
 #include <QImage>
 #include "MyGraphicsView.h"
 #include "HistoryLogWidget.h"
+#include <QLabel>
 
 class MaskGeneratorView :public QMainWindow{
     Q_OBJECT
@@ -34,6 +35,7 @@ private:
 	MyQGraphicsPixmapItem * m_GraphicsItem = nullptr;
     float scaleFactor = 100;
     HistoryLogWidget * m_HistoryLogWidget = nullptr;
+    QLabel * m_PosLabel = nullptr;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
@@ -61,11 +63,14 @@ public slots:
     void onActionTriggered_Help();
     void onActionTriggered_About();
 
-    void onActionTriggered_Test();
+    void onActionTriggered_Test_1();
+    void onActionTriggered_Test_2();
+    void onActionTriggered_Test_3();
     void onMouseWheelZoom(int delta);
 	
     void onValueChanged_threshold(int value);
 	void onMouseLeftDown(int x, int y);
+	void onMouseMoved(int x,int y);
 };
 
 

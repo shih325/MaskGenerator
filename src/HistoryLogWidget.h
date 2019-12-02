@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Anna on 2019/12/1.
 //
 
@@ -23,9 +23,8 @@ public:
     void redo();
     void undo();
 private:
-    std::list<QTableWidgetItem* > itemList;
+    std::vector<QTableWidgetItem* > itemList;
     int current;
-    int total;
 };
 
 

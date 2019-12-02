@@ -55,39 +55,6 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="2" rowspan="2">
-     <widget class="QGroupBox" name="groupBox_history">
-      <property name="maximumSize">
-       <size>
-        <width>420</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>历史记录</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="leftMargin">
-        <number>1</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <property name="rightMargin">
-        <number>1</number>
-       </property>
-       <property name="bottomMargin">
-        <number>1</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="historyLayout"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="1" column="0" rowspan="3">
      <widget class="QFrame" name="frame">
       <property name="maximumSize">
@@ -140,42 +107,6 @@
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="maximumSize">
-       <size>
-        <width>420</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>状态</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="textEdit_state"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QGroupBox" name="groupBox_4">
-      <property name="maximumSize">
-       <size>
-        <width>420</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>备注</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="textEdit_label"/>
        </item>
       </layout>
      </widget>
@@ -253,6 +184,72 @@
       </layout>
      </widget>
     </item>
+    <item row="3" column="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="maximumSize">
+       <size>
+        <width>420</width>
+        <height>240</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>备注</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="textEdit_label"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2" rowspan="3">
+     <widget class="QGroupBox" name="groupBox_history">
+      <property name="maximumSize">
+       <size>
+        <width>420</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>历史记录</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="historyLayout"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -285,7 +282,9 @@
     </property>
     <addaction name="action_help"/>
     <addaction name="action_about"/>
-    <addaction name="action_test"/>
+    <addaction name="action_test_1"/>
+    <addaction name="action_test_2"/>
+    <addaction name="action_test_3"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -341,7 +340,9 @@
    <addaction name="separator"/>
    <addaction name="action_settings"/>
    <addaction name="separator"/>
-   <addaction name="action_test"/>
+   <addaction name="action_test_1"/>
+   <addaction name="action_test_2"/>
+   <addaction name="action_test_3"/>
   </widget>
   <action name="action_open_folder">
    <property name="icon">
@@ -466,13 +467,31 @@
     <string>关于</string>
    </property>
   </action>
-  <action name="action_test">
+  <action name="action_test_1">
    <property name="icon">
     <iconset resource="MaskGenerator.qrc">
-     <normaloff>:/MaskGenerator/resource/test.ico</normaloff>:/MaskGenerator/resource/test.ico</iconset>
+     <normaloff>:/MaskGenerator/resource/one.ico</normaloff>:/MaskGenerator/resource/one.ico</iconset>
    </property>
    <property name="text">
-    <string>测试</string>
+    <string>测试1</string>
+   </property>
+  </action>
+  <action name="action_test_2">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/two.ico</normaloff>:/MaskGenerator/resource/two.ico</iconset>
+   </property>
+   <property name="text">
+    <string>测试2</string>
+   </property>
+  </action>
+  <action name="action_test_3">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/three.ico</normaloff>:/MaskGenerator/resource/three.ico</iconset>
+   </property>
+   <property name="text">
+    <string>测试3</string>
    </property>
   </action>
  </widget>
@@ -705,10 +724,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_test</sender>
+   <sender>action_test_1</sender>
    <signal>triggered()</signal>
    <receiver>MaskGenerator</receiver>
-   <slot>onActionTriggered_Test()</slot>
+   <slot>onActionTriggered_Test_1()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -736,6 +755,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_test_2</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test_2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_test_3</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test_3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onActionTriggered_OpenFolder()</slot>
@@ -752,7 +803,9 @@
   <slot>onActionTriggered_Settings()</slot>
   <slot>onActionTriggered_Help()</slot>
   <slot>onActionTriggered_About()</slot>
-  <slot>onActionTriggered_Test()</slot>
+  <slot>onActionTriggered_Test_1()</slot>
   <slot>onValueChanged_threshold(int)</slot>
+  <slot>onActionTriggered_Test_2()</slot>
+  <slot>onActionTriggered_Test_3()</slot>
  </slots>
 </ui>

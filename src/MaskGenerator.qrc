@@ -18,5 +18,8 @@
         <file>resource/gray.ico</file>
         <file>resource/red.ico</file>
         <file>resource/green.ico</file>
+        <file>resource/one.ico</file>
+        <file>resource/two.ico</file>
+        <file>resource/three.ico</file>
     </qresource>
 </RCC>

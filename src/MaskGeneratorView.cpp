@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Anna on 2019/11/26.
 //
 
@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QPixmap>
+#include <QDateTime>
 #include "Tools.h"
 #include "Utils.h"
 /*
@@ -38,8 +39,13 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
 
     this->m_HistoryLogWidget=new HistoryLogWidget(this);
     ui.historyLayout->addWidget(m_HistoryLogWidget);
-    m_HistoryLogWidget->add("test");
     m_HistoryLogWidget->show();
+
+    this->m_PosLabel =new QLabel("?");
+    this->m_PosLabel->setMinimumSize(m_PosLabel->sizeHint());
+    this->m_PosLabel->setAlignment(Qt::AlignHCenter);
+    ui.statusbar->addWidget(this->m_PosLabel);
+    ui.statusbar->setStyleSheet(QString("QStatusBar::item{border: 0px}"));
     //接收拖放
     setAcceptDrops(true);
     MasterSwitch(false);
@@ -139,6 +145,7 @@ void MaskGeneratorView::onActionTriggered_UnDo() {
         *this->working_img=*history_data->workingImg;
         *this->mask=*history_data->maskImg;
         showMat(*this->working_img);
+        this->m_HistoryLogWidget->undo();
     }
 }
 /*
@@ -153,6 +160,7 @@ void MaskGeneratorView::onActionTriggered_ReDo() {
 		*this->working_img = *history_data->workingImg;
 		*this->mask = *history_data->maskImg;
 		showMat(*this->working_img);
+		this->m_HistoryLogWidget->redo();
 	}
 }
 /*
@@ -351,14 +359,28 @@ bool MaskGeneratorView::JobStart() {
     //历史记录初始化
     auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
     this->history->add(initData);
+    m_HistoryLogWidget->add("Open img");
     return true;
 }
 /*
- * Action: 测试
+ * Action: 测试1
  */
-void MaskGeneratorView::onActionTriggered_Test() {
+void MaskGeneratorView::onActionTriggered_Test_1() {
     /*cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
     myDrawContours(src);*/
+    this->m_HistoryLogWidget->add("hello world");
+}
+/*
+ * Action: 测试2
+ */
+void MaskGeneratorView::onActionTriggered_Test_2() {
+    this->m_HistoryLogWidget->undo();
+}
+/*
+ * Action: 测试3
+ */
+void MaskGeneratorView::onActionTriggered_Test_3() {
+    this->m_HistoryLogWidget->redo();
 }
 /*
  * 响应graphics区域的鼠标滚轮动作:缩放图片
@@ -397,6 +419,7 @@ void MaskGeneratorView::showMat(cv::Mat img) {
     m_GraphicsScene = new MyQGraphicsScene();
 	m_GraphicsItem = new MyQGraphicsPixmapItem();
 	connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
+    connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
 	m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
     //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
 	m_GraphicsScene->addItem(m_GraphicsItem);
@@ -417,7 +440,6 @@ void MaskGeneratorView::onValueChanged_threshold(int value) {
  */
 void MaskGeneratorView::onMouseLeftDown(int x, int y)
 {
-	qDebug("catch!:x=%d,y=%d",x,y);
     cv::Point seed = cv::Point(x, y);
     cv::Scalar fill_color = cv::Scalar(0, 0, 255);
     cv::Rect ccomp;
@@ -428,6 +450,11 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
     showMat(*this->working_img);
     auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
     this->history->add(history_data);
+
+
+    QString msg;
+    msg.sprintf("Mark at (%d,%d)", x,y);
+    m_HistoryLogWidget->add(msg);
 }
 
 /*
@@ -448,3 +475,14 @@ void MaskGeneratorView::workingImgRefresh() {
     drawContours(*this->working_img, contours, -1, cv::Scalar(0, 255,0), 1);
     showMat(*working_img);
 }
+/*
+ * 响应鼠标移动
+ */
+void MaskGeneratorView::onMouseMoved(int x, int y) {
+    QString msg;
+    msg.sprintf("(%d,%d)", x,y);
+    this->m_PosLabel->setText(msg);
+    this->m_PosLabel->show();
+}
+
+

@@ -8,7 +8,7 @@
 #include <qDebug>
 #include <QGraphicsSceneMouseEvent>
 /*
- * 滚轮滑动事件
+ * 滚轮滑动事件:view
  */
 void MyGraphicsView::wheelEvent(QWheelEvent *event) {
     QGraphicsView::wheelEvent(event);
@@ -37,4 +37,22 @@ void MyQGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	{
 		emit mouseLeftDown(event->scenePos().x(), event->scenePos().y());
 	}
+}
+/*
+ * 鼠标移动事件:view
+ */
+void MyGraphicsView::mouseMoveEvent(QMouseEvent *event) {
+    QGraphicsView::mouseMoveEvent(event);
+}
+/*
+ * 鼠标移动事件:sense
+ */
+void MyQGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    QGraphicsScene::mouseMoveEvent(event);
+}
+/*
+ * 鼠标移动事件:item
+ */
+void MyQGraphicsPixmapItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    emit mouseMoved(event->scenePos().x(), event->scenePos().y());
 }
