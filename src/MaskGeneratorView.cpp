@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Anna on 2019/11/26.
 //
 
@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QPixmap>
+#include <QDateTime>
 #include "Tools.h"
 #include "Utils.h"
 /*
@@ -38,8 +39,14 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
 
     this->m_HistoryLogWidget=new HistoryLogWidget(this);
     ui.historyLayout->addWidget(m_HistoryLogWidget);
-    m_HistoryLogWidget->add("test");
     m_HistoryLogWidget->show();
+
+    this->m_PosLabel =new QLabel("?");
+    this->m_PosLabel->setMinimumSize(m_PosLabel->sizeHint());
+    this->m_PosLabel->setAlignment(Qt::AlignHCenter);
+    ui.statusbar->addWidget(this->m_PosLabel);
+    ui.statusbar->setStyleSheet(QString("QStatusBar::item{border: 0px}"));
+    ui.action_show_origin->setChecked(true);
     //接收拖放
     setAcceptDrops(true);
     MasterSwitch(false);
@@ -139,6 +146,7 @@ void MaskGeneratorView::onActionTriggered_UnDo() {
         *this->working_img=*history_data->workingImg;
         *this->mask=*history_data->maskImg;
         showMat(*this->working_img);
+        this->m_HistoryLogWidget->undo();
     }
 }
 /*
@@ -153,6 +161,7 @@ void MaskGeneratorView::onActionTriggered_ReDo() {
 		*this->working_img = *history_data->workingImg;
 		*this->mask = *history_data->maskImg;
 		showMat(*this->working_img);
+		this->m_HistoryLogWidget->redo();
 	}
 }
 /*
@@ -171,19 +180,19 @@ void MaskGeneratorView::onActionTriggered_Next() {
  * Action:显示原图
  */
 void MaskGeneratorView::onActionTriggered_ShowOrigin() {
-
+    ui.action_show_origin->setChecked(true);
+    ui.action_show_mask->setChecked(false);
+    this->m_DisplayMode=ORIGIN;
+    updateUI();
 }
 /*
  * Action:显示掩码
  */
 void MaskGeneratorView::onActionTriggered_ShowMask() {
-
-}
-/*
- * Action:显示透视图
- */
-void MaskGeneratorView::onActionTriggered_ShowAlpha() {
-
+    ui.action_show_origin->setChecked(false);
+    ui.action_show_mask->setChecked(true);
+    this->m_DisplayMode=MASK;
+    updateUI();
 }
 /*
  * Action:设置
@@ -347,18 +356,32 @@ bool MaskGeneratorView::JobStart() {
     this->working_img=new cv::Mat(this->target->clone());
     this->mask = new cv::Mat(cv::Mat::zeros(this->target->rows+2, this->target->cols+2, CV_8UC1));
     //显示working
-    showMat(*working_img);
+    updateUI();
     //历史记录初始化
     auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
     this->history->add(initData);
+    m_HistoryLogWidget->add("Open img");
     return true;
 }
 /*
- * Action: 测试
+ * Action: 测试1
  */
-void MaskGeneratorView::onActionTriggered_Test() {
+void MaskGeneratorView::onActionTriggered_Test_1() {
     /*cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
     myDrawContours(src);*/
+    this->m_HistoryLogWidget->add("hello world");
+}
+/*
+ * Action: 测试2
+ */
+void MaskGeneratorView::onActionTriggered_Test_2() {
+    this->m_HistoryLogWidget->undo();
+}
+/*
+ * Action: 测试3
+ */
+void MaskGeneratorView::onActionTriggered_Test_3() {
+    this->m_HistoryLogWidget->redo();
 }
 /*
  * 响应graphics区域的鼠标滚轮动作:缩放图片
@@ -397,6 +420,7 @@ void MaskGeneratorView::showMat(cv::Mat img) {
     m_GraphicsScene = new MyQGraphicsScene();
 	m_GraphicsItem = new MyQGraphicsPixmapItem();
 	connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
+    connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
 	m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
     //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
 	m_GraphicsScene->addItem(m_GraphicsItem);
@@ -417,24 +441,29 @@ void MaskGeneratorView::onValueChanged_threshold(int value) {
  */
 void MaskGeneratorView::onMouseLeftDown(int x, int y)
 {
-	qDebug("catch!:x=%d,y=%d",x,y);
-    cv::Point seed = cv::Point(x, y);
-    cv::Scalar fill_color = cv::Scalar(0, 0, 255);
-    cv::Rect ccomp;
-    int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
-    //working_img 和 mask都会被改
-    floodFill(*this->working_img,*this->mask,
-            seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
-    showMat(*this->working_img);
-    auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
-    this->history->add(history_data);
+    if(this->m_DisplayMode==ORIGIN){
+        cv::Point seed = cv::Point(x, y);
+        cv::Scalar fill_color = cv::Scalar(255, 0, 0);
+        cv::Rect ccomp;
+        int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
+        //working_img 和 mask都会被改
+        floodFill(*this->working_img,*this->mask,
+                  seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
+        showMat(*this->working_img);
+        updateUI();
+        auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
+        this->history->add(history_data);
+        QString msg;
+        msg.sprintf("Mark at (%d,%d)", x,y);
+        m_HistoryLogWidget->add(msg);
+    }
 }
 
 /*
  * 刷新工作图片
  */
 void MaskGeneratorView::workingImgRefresh() {
-    //原始图片灰度化
+    //获取一张原始图像的灰度化版本
     cv::Mat gray,threshold_img;
     cv::cvtColor(*this->target, gray, cv::COLOR_RGB2GRAY);
     //使用当前的threshold进行处理
@@ -445,6 +474,36 @@ void MaskGeneratorView::workingImgRefresh() {
     cv::findContours(threshold_img, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
     //workingimg赋值为原始图加上边缘
 	*this->working_img = this->target->clone();//要深拷贝,防止元数据污染
+	//把之前画好的mask叠加过来
+	cv::Mat _mask=this->mask->clone();
+    auto _mask_orgi_size = _mask(cv::Rect(1,1, this->target->cols, this->target->rows));
+    this->working_img->setTo(cv::Scalar(255,0,0),_mask_orgi_size);
+//    cv::Mat pure_blue = cv::Mat(this->target->rows, this->target->cols, CV_8UC3, cv::Scalar(255, 0, 0));
+//    pure_blue.copyTo(*this->working_img,_mask_orgi_size);
     drawContours(*this->working_img, contours, -1, cv::Scalar(0, 255,0), 1);
-    showMat(*working_img);
+    updateUI();
 }
+/*
+ * 响应鼠标移动
+ */
+void MaskGeneratorView::onMouseMoved(int x, int y) {
+    QString msg;
+    msg.sprintf("(%d,%d)", x,y);
+    this->m_PosLabel->setText(msg);
+    this->m_PosLabel->show();
+}
+/*
+ * 更新ui
+ */
+void MaskGeneratorView::updateUI() {
+    switch(this->m_DisplayMode){
+        case ORIGIN:
+            showMat(*working_img);
+            break;
+        case MASK:
+            showMat(*mask);
+            break;
+    }
+}
+
+
