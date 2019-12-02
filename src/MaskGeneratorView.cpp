@@ -75,6 +75,7 @@ void MaskGeneratorView::onActionTriggered_OpenFolder() {
             //对list进行校验,如果校验通过,则允许使用程序的相关功能
             if(CheckJson()){
                 MasterSwitch(true);
+                JobStart();
             }else{
                 QMessageBox message(QMessageBox::NoIcon, "error!", "Unknown JSON file!");
                 message.exec();
@@ -316,7 +317,14 @@ QString MaskGeneratorView::getCurrentImageName() {
  * 总开关
  */
 void MaskGeneratorView::MasterSwitch(bool status) {
-
+    ui.verticalSlider_threshold->setEnabled(status);
+    ui.action_show_mask->setEnabled(status);
+    ui.action_show_origin->setEnabled(status);
+    ui.action_UnDo->setEnabled(status);
+    ui.action_Redo->setEnabled(status);
+    ui.action_save->setEnabled(status);
+    ui.action_prior->setEnabled(status);
+    ui.action_next->setEnabled(status);
 }
 /*
  * 校验Json文件
@@ -416,16 +424,18 @@ void MaskGeneratorView::onMouseWheelZoom(int delta) {
  * 这里有内存泄漏!
  */
 void MaskGeneratorView::showMat(cv::Mat img) {
-    *qimage_to_show = Tools::cvMat2QImage(img);
-    m_GraphicsScene = new MyQGraphicsScene();
-	m_GraphicsItem = new MyQGraphicsPixmapItem();
-	connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
-    connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
-	m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
-    //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
-	m_GraphicsScene->addItem(m_GraphicsItem);
-    m_GraphicsView->setScene(m_GraphicsScene);
-    m_GraphicsView->show();
+    if(!img.empty()){
+        *qimage_to_show = Tools::cvMat2QImage(img);
+        m_GraphicsScene = new MyQGraphicsScene();
+        m_GraphicsItem = new MyQGraphicsPixmapItem();
+        connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
+        connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
+        m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
+        //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
+        m_GraphicsScene->addItem(m_GraphicsItem);
+        m_GraphicsView->setScene(m_GraphicsScene);
+        m_GraphicsView->show();
+    }
 }
 /*
  * 响应阈值滑动条的运动
