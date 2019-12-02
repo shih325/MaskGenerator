@@ -1,0 +1,13 @@
+exit.ico
+left.ico
+list.txt
+mouse.ico
+open_file.ico
+open_folder.ico
+paintbrush.ico
+redo.ico
+right.ico
+save.ico
+switch_off.ico
+switch_on.ico
+undo.ico

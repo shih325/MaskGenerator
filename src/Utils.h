@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-using namespace cv;
-
 extern int thres_init_value;
 extern cv::Mat img;
 extern cv::Mat gray;

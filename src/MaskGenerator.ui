@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MaskGenerator</class>
+ <widget class="QMainWindow" name="MaskGenerator">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>860</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MaskGenerator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="MaskGenerator.qrc">
+    <normaloff>:/MaskGenerator/resource/main.ico</normaloff>:/MaskGenerator/resource/main.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="1" rowspan="4">
+     <widget class="QFrame" name="frame_2">
+      <property name="minimumSize">
+       <size>
+        <width>512</width>
+        <height>512</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="imgLayout"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2" rowspan="2">
+     <widget class="QGroupBox" name="groupBox_history">
+      <property name="maximumSize">
+       <size>
+        <width>420</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>历史记录</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="historyLayout"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0" rowspan="3">
+     <widget class="QFrame" name="frame">
+      <property name="maximumSize">
+       <size>
+        <width>60</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QSlider" name="verticalSlider_threshold">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBothSides</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="verticalSlider_thickness">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="maximumSize">
+       <size>
+        <width>420</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>状态</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="textEdit_state"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="maximumSize">
+       <size>
+        <width>420</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>备注</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="textEdit_label"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="minimumSize">
+       <size>
+        <width>60</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>60</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>画笔</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_mouse">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="MaskGenerator.qrc">
+           <normaloff>:/MaskGenerator/resource/mouse.ico</normaloff>:/MaskGenerator/resource/mouse.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_pen">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="MaskGenerator.qrc">
+           <normaloff>:/MaskGenerator/resource/paintbrush.ico</normaloff>:/MaskGenerator/resource/paintbrush.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>860</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <widget class="QMenu" name="menu_4">
+     <property name="title">
+      <string>打开</string>
+     </property>
+     <addaction name="action_open_folder"/>
+     <addaction name="action_open_file"/>
+    </widget>
+    <addaction name="menu_4"/>
+    <addaction name="action_save"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="action_help"/>
+    <addaction name="action_about"/>
+    <addaction name="action_test"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>工具</string>
+    </property>
+    <addaction name="action_swithc"/>
+    <addaction name="action_settings"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>视图</string>
+    </property>
+    <addaction name="action_show_origin"/>
+    <addaction name="action_show_mask"/>
+    <addaction name="action_show_alpha"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <addaction name="action_UnDo"/>
+    <addaction name="action_Redo"/>
+    <addaction name="separator"/>
+    <addaction name="action_prior"/>
+    <addaction name="action_next"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_6"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_2"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_open_folder"/>
+   <addaction name="action_open_file"/>
+   <addaction name="action_save"/>
+   <addaction name="separator"/>
+   <addaction name="action_UnDo"/>
+   <addaction name="action_Redo"/>
+   <addaction name="separator"/>
+   <addaction name="action_prior"/>
+   <addaction name="action_next"/>
+   <addaction name="separator"/>
+   <addaction name="action_settings"/>
+   <addaction name="separator"/>
+   <addaction name="action_test"/>
+  </widget>
+  <action name="action_open_folder">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/open_folder.ico</normaloff>:/MaskGenerator/resource/open_folder.ico</iconset>
+   </property>
+   <property name="text">
+    <string>打开目录</string>
+   </property>
+  </action>
+  <action name="action_open_file">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/open_file.ico</normaloff>:/MaskGenerator/resource/open_file.ico</iconset>
+   </property>
+   <property name="text">
+    <string>打开工程文件</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/save.ico</normaloff>:/MaskGenerator/resource/save.ico</iconset>
+   </property>
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/exit.ico</normaloff>:/MaskGenerator/resource/exit.ico</iconset>
+   </property>
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="action_show_origin">
+   <property name="text">
+    <string>显示原图</string>
+   </property>
+  </action>
+  <action name="action_show_mask">
+   <property name="text">
+    <string>显示掩码</string>
+   </property>
+  </action>
+  <action name="action_UnDo">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/undo.ico</normaloff>:/MaskGenerator/resource/undo.ico</iconset>
+   </property>
+   <property name="text">
+    <string>UnDo (Ctrl+Z)</string>
+   </property>
+   <property name="toolTip">
+    <string>UnDo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action_Redo">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/redo.ico</normaloff>:/MaskGenerator/resource/redo.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Redo (Ctrl+Y)</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="action_swithc">
+   <property name="text">
+    <string>辅助开关</string>
+   </property>
+  </action>
+  <action name="action_show_alpha">
+   <property name="text">
+    <string>显示透视图</string>
+   </property>
+  </action>
+  <action name="action_settings">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/setting.ico</normaloff>:/MaskGenerator/resource/setting.ico</iconset>
+   </property>
+   <property name="text">
+    <string>设置</string>
+   </property>
+  </action>
+  <action name="action_prior">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/left.ico</normaloff>:/MaskGenerator/resource/left.ico</iconset>
+   </property>
+   <property name="text">
+    <string>上一张</string>
+   </property>
+  </action>
+  <action name="action_next">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/right.ico</normaloff>:/MaskGenerator/resource/right.ico</iconset>
+   </property>
+   <property name="text">
+    <string>下一张</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="text">
+    <string>使用帮助</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="action_test">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/test.ico</normaloff>:/MaskGenerator/resource/test.ico</iconset>
+   </property>
+   <property name="text">
+    <string>测试</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="MaskGenerator.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>action_about</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_About()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Redo</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_ReDo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_UnDo</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_UnDo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_exit</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Exit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_help</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Help()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_next</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Next()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_open_file</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_OpenFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_prior</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Prior()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_open_folder</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_OpenFolder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_save</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_settings</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Settings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_show_alpha</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_ShowAlpha()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_show_mask</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_ShowMask()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_show_origin</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_ShowOrigin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_test</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalSlider_threshold</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onValueChanged_threshold(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>348</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onActionTriggered_OpenFolder()</slot>
+  <slot>onActionTriggered_OpenFile()</slot>
+  <slot>onActionTriggered_Save()</slot>
+  <slot>onActionTriggered_Exit()</slot>
+  <slot>onActionTriggered_UnDo()</slot>
+  <slot>onActionTriggered_ReDo()</slot>
+  <slot>onActionTriggered_Prior()</slot>
+  <slot>onActionTriggered_Next()</slot>
+  <slot>onActionTriggered_ShowOrigin()</slot>
+  <slot>onActionTriggered_ShowMask()</slot>
+  <slot>onActionTriggered_ShowAlpha()</slot>
+  <slot>onActionTriggered_Settings()</slot>
+  <slot>onActionTriggered_Help()</slot>
+  <slot>onActionTriggered_About()</slot>
+  <slot>onActionTriggered_Test()</slot>
+  <slot>onValueChanged_threshold(int)</slot>
+ </slots>
+</ui>

@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/MaskGenerator">
+        <file>resource/exit.ico</file>
+        <file>resource/left.ico</file>
+        <file>resource/mouse.ico</file>
+        <file>resource/open_file.ico</file>
+        <file>resource/open_folder.ico</file>
+        <file>resource/paintbrush.ico</file>
+        <file>resource/redo.ico</file>
+        <file>resource/right.ico</file>
+        <file>resource/save.ico</file>
+        <file>resource/switch_off.ico</file>
+        <file>resource/switch_on.ico</file>
+        <file>resource/undo.ico</file>
+        <file>resource/setting.ico</file>
+        <file>resource/test.ico</file>
+        <file>resource/main.ico</file>
+        <file>resource/gray.ico</file>
+        <file>resource/red.ico</file>
+        <file>resource/green.ico</file>
+    </qresource>
+</RCC>

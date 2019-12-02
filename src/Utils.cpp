@@ -65,4 +65,3 @@ void myDrawContours(cv::Mat src) {
     cv::waitKey(0);
     cv::destroyAllWindows();
 }
-

@@ -1,0 +1,56 @@
+{
+    "imagelist": [
+        {
+            "id": "0",
+            "label": "",
+            "mask": "",
+            "name": "21_training.tif"
+        },
+        {
+            "id": "1",
+            "label": "",
+            "mask": "",
+            "name": "22_training.tif"
+        },
+        {
+            "id": "2",
+            "label": "",
+            "mask": "",
+            "name": "23_training.tif"
+        },
+        {
+            "id": "3",
+            "label": "",
+            "mask": "",
+            "name": "24_training.tif"
+        },
+        {
+            "id": "4",
+            "label": "",
+            "mask": "",
+            "name": "25_training.tif"
+        },
+        {
+            "id": "5",
+            "label": "",
+            "mask": "",
+            "name": "im0009.png"
+        },
+        {
+            "id": "6",
+            "label": "",
+            "mask": "",
+            "name": "im0041.png"
+        },
+        {
+            "id": "7",
+            "label": "",
+            "mask": "",
+            "name": "im0087.png"
+        }
+    ],
+    "metadata": {
+        "current": 6,
+        "num": 8
+    }
+}
