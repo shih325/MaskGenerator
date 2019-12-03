@@ -450,7 +450,7 @@ bool MaskGeneratorView::JobStart() {
     updateUI();
     //历史记录初始化
     auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
-    // this->history->clear();
+    this->history->clear();
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
     m_HistoryLogWidget->add("Open img");
@@ -671,5 +671,6 @@ void MaskGeneratorView::saveMaskImage() {
     }
     SaveCurrent(savedMaskName, ui.textEdit_label->toPlainText());
     cv::imwrite(savedMaskPath, _mask_orgi_size);
+    // this->history->clear();
 }
 
