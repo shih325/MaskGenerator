@@ -9,19 +9,19 @@
         {
             "id": "1",
             "label": "",
-            "mask": "",
+            "mask": "22_training_mask.png",
             "name": "22_training.tif"
         },
         {
             "id": "2",
             "label": "",
-            "mask": "23_training_mask.png",
+            "mask": "",
             "name": "23_training.tif"
         },
         {
             "id": "3",
             "label": "",
-            "mask": "",
+            "mask": "24_training_mask.png",
             "name": "24_training.tif"
         },
         {
@@ -33,24 +33,24 @@
         {
             "id": "5",
             "label": "",
-            "mask": "im0009_mask.png",
+            "mask": "",
             "name": "im0009.png"
         },
         {
             "id": "6",
             "label": "",
-            "mask": "",
+            "mask": "im0041_mask.png",
             "name": "im0041.png"
         },
         {
             "id": "7",
             "label": "",
-            "mask": "",
+            "mask": "im0087_mask.png",
             "name": "im0087.png"
         }
     ],
     "metadata": {
-        "current": 4,
+        "current": 7,
         "num": 8
     }
 }

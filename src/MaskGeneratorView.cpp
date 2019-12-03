@@ -450,7 +450,7 @@ bool MaskGeneratorView::JobStart() {
     updateUI();
     //历史记录初始化
     auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
-    this->history->clear();
+    // this->history->clear();
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
     m_HistoryLogWidget->add("Open img");
@@ -645,16 +645,25 @@ void MaskGeneratorView::setCurrentValue() {
 
 void MaskGeneratorView::saveMaskImage() {
     QString savedMaskName = getCurrentImageName().split('.')[0]+"_mask.png";
-    QFileInfo prefix(srcpath);
-    std::string savedMaskPath = (prefix.absolutePath()+"/masks/"+savedMaskName).toStdString();
+    QDir dir(srcpath);
+    std::string savedMaskPath;
+    if (dir.cdUp()) {
+        QString savedMaskPrefix = dir.absolutePath()+"/masks/";
+        QDir dir(savedMaskPrefix);
+        if (!dir.exists()) {
+            dir.mkdir(savedMaskPrefix);
+        } // if masks dir doesn't exist, then create the mask dir;
+        savedMaskPath = (savedMaskPrefix+savedMaskName).toStdString();
+        std::cout << savedMaskPath << std::endl;
+        if (savedMaskPath.empty()) {
+            QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
+            message.exec();
+            return ;
+        }
+    } // parent dir exists;
+    else { return ; } // parent dir not exists;
     cv::Mat _mask=this->mask->clone();
     auto _mask_orgi_size = _mask(cv::Rect(1,1, this->target->cols, this->target->rows));
-//    if ((prefix.absolutePath()+"/masks/"+savedMaskName).toStdString().empty()) {
-    if (savedMaskPath.empty()) {
-        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
-        message.exec();
-        return ;
-    }
     if (_mask_orgi_size.empty()) {
         QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: mask is empty!");
         message.exec();
