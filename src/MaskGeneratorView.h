@@ -38,7 +38,7 @@ private:
     QLabel * m_PosLabel = nullptr;
     enum DISPLAY_MODE {ORIGIN,MASK};
     DISPLAY_MODE m_DisplayMode = ORIGIN;
-    enum DIRECTION {PREV, NEXT};                              // json 'current' value update direction;
+    enum DIRECTION {PREV_PREV, PREV, NEXT};                              // json 'current' value update direction;
     DIRECTION m_Direction = NEXT;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件

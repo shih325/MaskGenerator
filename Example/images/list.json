@@ -21,7 +21,7 @@
         {
             "id": "3",
             "label": "",
-            "mask": "",
+            "mask": "24_training_mask.png",
             "name": "24_training.tif"
         },
         {
@@ -50,7 +50,7 @@
         }
     ],
     "metadata": {
-        "current": 7,
+        "current": 5,
         "num": 8
     }
 }

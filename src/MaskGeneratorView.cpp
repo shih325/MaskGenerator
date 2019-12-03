@@ -189,25 +189,26 @@ void MaskGeneratorView::onActionTriggered_ReDo() {
  * Action:前一张
  */
 void MaskGeneratorView::onActionTriggered_Prior() {
+    // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
         msgBox.setText("The document has been modified.");
         msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         int ret = msgBox.exec();
         switch (ret) {
             case QMessageBox::Save:
                 saveMaskImage();
                 break;
-            case QMessageBox::Discard:
-                break;
+//            case QMessageBox::Discard:
+//                break;
             case QMessageBox::Cancel:
-                break;
+                return ;
             default:
                 break;
         }
-        this->m_Direction = PREV;
+        this->m_Direction = PREV_PREV;
         setCurrentValue();
         this->history->savedATop();
         m_HistoryLogWidget->clear();
@@ -225,26 +226,27 @@ void MaskGeneratorView::onActionTriggered_Prior() {
  * Action:下一张
  */
 void MaskGeneratorView::onActionTriggered_Next() {
+    // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
         msgBox.setText("The document has been modified.");
         msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         int ret = msgBox.exec();
         switch (ret) {
             case QMessageBox::Save:
                 saveMaskImage();
                 break;
-            case QMessageBox::Discard:
-                break;
+//            case QMessageBox::Discard:
+//                break;
             case QMessageBox::Cancel:
-                break;
+                return ;
             default:
                 break;
         }
-        this->m_Direction = NEXT;
-        setCurrentValue();
+        // this->m_Direction = NEXT;
+        // setCurrentValue();
         this->history->savedATop();
         m_HistoryLogWidget->clear();
         JobStart();
@@ -389,6 +391,7 @@ QString MaskGeneratorView::getCurrentImageName() {
     QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
     QJsonObject MetaDataObj = MetaDateRef.toObject();
     int current = MetaDataObj["current"].toInt();
+    std::cout << current << std::endl;
 
     QJsonArray::iterator ArrayIterator = ImageListJson.begin();
     QJsonValueRef targetValueRef = ArrayIterator[current];
@@ -622,6 +625,11 @@ void MaskGeneratorView::setCurrentValue() {
 
     //修改current的值
     switch(this->m_Direction) {
+        case PREV_PREV:
+            // check the low boundary
+            if (current == 0) MetaDataObj["current"] = current;
+            else MetaDataObj["current"]=current-2;
+            break;
         case PREV:
             // check the low boundary
             if (current == 0) MetaDataObj["current"] = current;
