@@ -25,6 +25,7 @@ private:
     cv::Mat * target;                                       //当前正在标定的源图片(不更改)
     cv::Mat * working_img;                                  //中间结果(更新,不保存到文件,需要历史记录)
     cv::Mat * mask;                                         //掩码(更新,保存到文件,需要历史记录)
+    cv::Mat * mask_rgb;                                     // use to cover the working image, to show the user masked area
     int threshold = 0;                                      //边缘检测阈值(需要历史记录)
 
     History * history;                                      //用于记录历史以及支持撤销重做功能

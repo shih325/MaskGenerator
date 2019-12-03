@@ -27,10 +27,7 @@ void onMouse(int event, int x, int y, int flags, void* param) {
     imshow("mask", mask_img);
     mask_img.copyTo(mask_orgi_size);
     mask_orgi_size = mask_img(cv::Rect(1,1, img.cols, img.rows));
-    mask_orgi_size.convertTo(output, output.type());
-    cv::bitwise_and(mask_img_rgb, mask_img_rgb, output, mask_orgi_size);
-    img.setTo(0, mask_orgi_size);
-    add(img, output, img);
+    img.setTo(cv::Scalar(255, 0, 0), mask_orgi_size);
 }
 
 void onThreshold(int, void*) {

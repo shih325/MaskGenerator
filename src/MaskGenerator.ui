@@ -788,6 +788,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_test_2</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test_2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_test_3</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Test_3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onActionTriggered_OpenFolder()</slot>

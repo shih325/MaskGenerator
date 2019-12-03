@@ -587,6 +587,7 @@ void MaskGeneratorView::onMouseMoved(int x, int y) {
     this->m_PosLabel->setText(msg);
     this->m_PosLabel->show();
 }
+
 /*
  * 更新ui
  */
@@ -672,4 +673,5 @@ void MaskGeneratorView::saveMaskImage() {
     SaveCurrent(savedMaskName, ui.textEdit_label->toPlainText());
     cv::imwrite(savedMaskPath, _mask_orgi_size);
 }
+
 
