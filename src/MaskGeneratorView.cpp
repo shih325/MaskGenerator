@@ -130,7 +130,7 @@ void MaskGeneratorView::onActionTriggered_Save() {
 //    std::string savedMaskPath = (prefix.absolutePath()+"/masks/"+savedMaskName).toStdString();
 //    cv::Mat _mask=this->mask->clone();
 //    auto _mask_orgi_size = _mask(cv::Rect(1,1, this->target->cols, this->target->rows));
-////    if ((prefix.absolutePath()+"/masks/"+savedMaskName).toStdString().empty()) {
+//    if ((prefix.absolutePath()+"/masks/"+savedMaskName).toStdString().empty()) {
 //    if (savedMaskPath.empty()) {
 //        QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
 //        message.exec();
@@ -144,6 +144,8 @@ void MaskGeneratorView::onActionTriggered_Save() {
 //    SaveCurrent(savedMaskName, ui.textEdit_label->toPlainText());
 //    cv::imwrite(savedMaskPath, _mask_orgi_size);
     saveMaskImage();
+    this->m_Direction = NEXT;
+    setCurrentValue();
     this->history->savedATop();
     m_HistoryLogWidget->clear();
     JobStart();
@@ -192,7 +194,7 @@ void MaskGeneratorView::onActionTriggered_Prior() {
     // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
-        msgBox.setText("The document has been modified.");
+        msgBox.setText("The image has been masked.");
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
@@ -208,7 +210,7 @@ void MaskGeneratorView::onActionTriggered_Prior() {
             default:
                 break;
         }
-        this->m_Direction = PREV_PREV;
+        this->m_Direction = PREV;
         setCurrentValue();
         this->history->savedATop();
         m_HistoryLogWidget->clear();
@@ -229,7 +231,7 @@ void MaskGeneratorView::onActionTriggered_Next() {
     // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
-        msgBox.setText("The document has been modified.");
+        msgBox.setText("The image has been masked.");
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
@@ -245,8 +247,8 @@ void MaskGeneratorView::onActionTriggered_Next() {
             default:
                 break;
         }
-        // this->m_Direction = NEXT;
-        // setCurrentValue();
+        this->m_Direction = NEXT;
+        setCurrentValue();
         this->history->savedATop();
         m_HistoryLogWidget->clear();
         JobStart();
@@ -361,8 +363,8 @@ void MaskGeneratorView::SaveCurrent(QString maskfilename, QString label) {
     ImageListJsonRef=ImageListJson;
 
     //修改current的值
-    if (current == total-1) MetaDataObj["current"] = current;
-    else MetaDataObj["current"]=current+1;
+    // if (current == total-1) MetaDataObj["current"] = current;
+    // else MetaDataObj["current"]=current+1;
     // MetaDataObj["current"]=current+1;
     MetaDateRef=MetaDataObj;
 
@@ -391,7 +393,7 @@ QString MaskGeneratorView::getCurrentImageName() {
     QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
     QJsonObject MetaDataObj = MetaDateRef.toObject();
     int current = MetaDataObj["current"].toInt();
-    std::cout << current << std::endl;
+    // std::cout << current << std::endl;
 
     QJsonArray::iterator ArrayIterator = ImageListJson.begin();
     QJsonValueRef targetValueRef = ArrayIterator[current];
@@ -625,11 +627,6 @@ void MaskGeneratorView::setCurrentValue() {
 
     //修改current的值
     switch(this->m_Direction) {
-        case PREV_PREV:
-            // check the low boundary
-            if (current == 0) MetaDataObj["current"] = current;
-            else MetaDataObj["current"]=current-2;
-            break;
         case PREV:
             // check the low boundary
             if (current == 0) MetaDataObj["current"] = current;
@@ -662,7 +659,7 @@ void MaskGeneratorView::saveMaskImage() {
             dir.mkdir(savedMaskPrefix);
         } // if masks dir doesn't exist, then create the mask dir;
         savedMaskPath = (savedMaskPrefix+savedMaskName).toStdString();
-        std::cout << savedMaskPath << std::endl;
+        // std::cout << savedMaskPath << std::endl;
         if (savedMaskPath.empty()) {
             QMessageBox message(QMessageBox::NoIcon, "Error!", "Saved Failed: saved image path is empty!");
             message.exec();
@@ -682,3 +679,30 @@ void MaskGeneratorView::saveMaskImage() {
     // this->history->clear();
 }
 
+/*
+ * When user closed window, it will exec
+ */
+void MaskGeneratorView::closeEvent(QCloseEvent *event) {
+    // if don't open the image, close directly
+    if (m_HistoryLogWidget->getCurrentValue() == -1) { return ; }
+
+    // if the image has been masked
+    if (m_HistoryLogWidget->getCurrentValue() != 0) {
+        QMessageBox msgBox;
+        msgBox.setText("The image has been masked.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch (ret) {
+            case QMessageBox::Save:
+                saveMaskImage();
+                break;
+            case QMessageBox::Cancel:
+                return ;
+            default:
+                break;
+        }
+        return ;
+    }
+}

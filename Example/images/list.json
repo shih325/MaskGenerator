@@ -39,7 +39,7 @@
         {
             "id": "6",
             "label": "",
-            "mask": "",
+            "mask": "im0041_mask.png",
             "name": "im0041.png"
         },
         {
@@ -50,7 +50,7 @@
         }
     ],
     "metadata": {
-        "current": 5,
+        "current": 6,
         "num": 8
     }
 }
