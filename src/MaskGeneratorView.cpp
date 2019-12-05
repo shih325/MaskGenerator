@@ -7,7 +7,6 @@
 #include <QDialog>
 #include <QFileInfo>
 #include <QDebug>
-
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QFile>
@@ -62,7 +61,7 @@ void MaskGeneratorView::onActionTriggered_OpenFolder() {
      */
     //打开文件夹
     QFileDialog * fileDialog = new QFileDialog(this);
-    fileDialog->setWindowTitle(QStringLiteral("Select the folder where you want to mark pictures"));
+    fileDialog->setWindowTitle(QStringLiteral("请选择待标注的图片所在的目录"));
     fileDialog->setFileMode(QFileDialog::Directory);
     if (fileDialog->exec() == QDialog::Accepted) {
         srcpath = fileDialog->selectedFiles()[0];
@@ -105,7 +104,7 @@ void MaskGeneratorView::onActionTriggered_OpenFolder() {
 void MaskGeneratorView::onActionTriggered_OpenFile() {
     //打开文件
     QFileDialog * fileDialog = new QFileDialog(this);
-    fileDialog->setWindowTitle(QStringLiteral("Select the JSON file to store the file list"));
+    fileDialog->setWindowTitle(QStringLiteral("请选择文件列表文件(list.json)"));
     fileDialog->setNameFilter(QStringLiteral("file list(*.json)"));
     fileDialog->setFileMode(QFileDialog::ExistingFile);
     if (fileDialog->exec() == QDialog::Accepted) {
@@ -194,8 +193,8 @@ void MaskGeneratorView::onActionTriggered_Prior() {
     // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
-        msgBox.setText("The image has been masked.");
-        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setText(QStringLiteral("是否保存?"));
+        //msgBox.setInformativeText(QStringLiteral("是否保存?"));
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         int ret = msgBox.exec();
@@ -231,8 +230,8 @@ void MaskGeneratorView::onActionTriggered_Next() {
     // if the image has been masked
     if (m_HistoryLogWidget->getCurrentValue() != 0) {
         QMessageBox msgBox;
-        msgBox.setText("The image has been masked.");
-        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setText(QStringLiteral("是否保存?"));
+        //msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         int ret = msgBox.exec();
@@ -295,7 +294,8 @@ void MaskGeneratorView::onActionTriggered_Help() {
  * Action:关于
  */
 void MaskGeneratorView::onActionTriggered_About() {
-
+    QMessageBox message(QMessageBox::NoIcon, QStringLiteral("眼底图像标注器"), QStringLiteral("吉林大学图形学与数字媒体实验室"));
+    message.exec();
 }
 /*
  * 创建json文件
@@ -394,7 +394,8 @@ QString MaskGeneratorView::getCurrentImageName() {
     QJsonObject MetaDataObj = MetaDateRef.toObject();
     int current = MetaDataObj["current"].toInt();
     // std::cout << current << std::endl;
-
+    this->current=current;
+    this->total=MetaDataObj["num"].toInt();
     QJsonArray::iterator ArrayIterator = ImageListJson.begin();
     QJsonValueRef targetValueRef = ArrayIterator[current];
     QJsonObject targetObject =targetValueRef.toObject();
@@ -459,27 +460,12 @@ bool MaskGeneratorView::JobStart() {
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
     m_HistoryLogWidget->add("Open img");
+    //状态条更新
+    QString msg;
+    msg.sprintf("current=%d,total=%d,filename=%s", this->current+1,this->total,qPrintable(imgfilename));
+    this->m_PosLabel->setText(msg);
+    this->m_PosLabel->show();
     return true;
-}
-/*
- * Action: 测试1
- */
-void MaskGeneratorView::onActionTriggered_Test_1() {
-    /*cv::Mat src = cv::imread("E:\\CLion\\MaskGenerator\\Example\\images\\im0041.png");
-    myDrawContours(src);*/
-    this->m_HistoryLogWidget->add("hello world");
-}
-/*
- * Action: 测试2
- */
-void MaskGeneratorView::onActionTriggered_Test_2() {
-    this->m_HistoryLogWidget->undo();
-}
-/*
- * Action: 测试3
- */
-void MaskGeneratorView::onActionTriggered_Test_3() {
-    this->m_HistoryLogWidget->redo();
 }
 /*
  * 响应graphics区域的鼠标滚轮动作:缩放图片
@@ -519,7 +505,7 @@ void MaskGeneratorView::showMat(cv::Mat img) {
         m_GraphicsScene = new MyQGraphicsScene();
         m_GraphicsItem = new MyQGraphicsPixmapItem();
         connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
-        connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
+        //connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
         m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
         //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
         m_GraphicsScene->addItem(m_GraphicsItem);
@@ -584,15 +570,6 @@ void MaskGeneratorView::workingImgRefresh() {
     updateUI();
 }
 /*
- * 响应鼠标移动
- */
-void MaskGeneratorView::onMouseMoved(int x, int y) {
-    QString msg;
-    msg.sprintf("(%d,%d)", x,y);
-    this->m_PosLabel->setText(msg);
-    this->m_PosLabel->show();
-}
-/*
  * 更新ui
  */
 void MaskGeneratorView::updateUI() {
@@ -629,13 +606,23 @@ void MaskGeneratorView::setCurrentValue() {
     switch(this->m_Direction) {
         case PREV:
             // check the low boundary
-            if (current == 0) MetaDataObj["current"] = current;
-            else MetaDataObj["current"]=current-1;
+            if (current == 0){
+                MetaDataObj["current"] = current;
+                QMessageBox message(QMessageBox::NoIcon, QStringLiteral("注意!"), QStringLiteral("当前图片已经是列表中第一张图片!"));
+                message.exec();
+            }
+            else
+                MetaDataObj["current"]=current-1;
             break;
         case NEXT:
             // check the high boundary
-            if (current == total-1) MetaDataObj["current"] = current;
-            else MetaDataObj["current"]=current+1;
+            if (current == total-1){
+                MetaDataObj["current"] = current;
+                QMessageBox message(QMessageBox::NoIcon, QStringLiteral("注意!"), QStringLiteral("当前图片已经是列表中最后一张图片!请检查是否已经完成标注!"));
+                message.exec();
+            }
+            else
+                MetaDataObj["current"]=current+1;
             break;
         default:
             break;
@@ -693,6 +680,7 @@ void MaskGeneratorView::closeEvent(QCloseEvent *event) {
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
+        msgBox.setWindowFlags(Qt::WindowCloseButtonHint | Qt::MSWindowsFixedSizeDialogHint);
         int ret = msgBox.exec();
         switch (ret) {
             case QMessageBox::Save:
@@ -705,4 +693,50 @@ void MaskGeneratorView::closeEvent(QCloseEvent *event) {
         }
         return ;
     }
+}
+/*
+ * Action : 查漏
+ * 检查文件列表中0-current,是否确实被标记了,且存储了mask
+ * check的结果用messagebox提示出来
+ * 并确保0-current都是确实被标记完的
+ */
+void MaskGeneratorView::onActionTriggered_Check() {
+    QFile file(JsonFile);
+    if(!file.open(QIODevice::ReadWrite)) {
+        qDebug() << "error when open json: " << JsonFile;
+        return;
+    }
+    QByteArray allData = file.readAll();
+
+    QJsonDocument jdoc(QJsonDocument::fromJson(allData));
+    QJsonObject RootObject = jdoc.object();
+
+    QJsonValueRef ImageListJsonRef = RootObject.find("imagelist").value();
+    QJsonArray ImageListJson =ImageListJsonRef.toArray();
+
+    QJsonValueRef MetaDateRef = RootObject.find("metadata").value();
+    QJsonObject MetaDataObj = MetaDateRef.toObject();
+
+    int current = MetaDataObj["current"].toInt();
+    int total = MetaDataObj["num"].toInt();
+
+
+    //读取ImageListJson,判别是否被标记,进行移动,然后写回到ImageListJsonRef
+    for (int i = 0; i < current; ++i) {
+        ImageListJson.at(i)[0].toInt();
+        ImageListJson.erase()
+    }
+
+
+    //修改current的值
+
+    MetaDataObj["current"] = current;
+
+    //对象写回
+    MetaDateRef=MetaDataObj;
+    ImageListJsonRef=ImageListJson;
+    //写回到文件
+    file.resize(0);
+    file.write(QJsonDocument(RootObject).toJson());
+    file.close();
 }

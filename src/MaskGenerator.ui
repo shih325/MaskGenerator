@@ -282,15 +282,12 @@
     </property>
     <addaction name="action_help"/>
     <addaction name="action_about"/>
-    <addaction name="action_test_1"/>
-    <addaction name="action_test_2"/>
-    <addaction name="action_test_3"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>工具</string>
     </property>
-    <addaction name="action_swithc"/>
+    <addaction name="action_check"/>
     <addaction name="action_settings"/>
    </widget>
    <widget class="QMenu" name="menu_5">
@@ -342,9 +339,7 @@
    <addaction name="action_show_origin"/>
    <addaction name="action_show_mask"/>
    <addaction name="separator"/>
-   <addaction name="action_test_1"/>
-   <addaction name="action_test_2"/>
-   <addaction name="action_test_3"/>
+   <addaction name="action_check"/>
    <addaction name="separator"/>
    <addaction name="action_help"/>
   </widget>
@@ -438,9 +433,13 @@
     <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="action_swithc">
+  <action name="action_check">
+   <property name="icon">
+    <iconset resource="MaskGenerator.qrc">
+     <normaloff>:/MaskGenerator/resource/check.ico</normaloff>:/MaskGenerator/resource/check.ico</iconset>
+   </property>
    <property name="text">
-    <string>辅助开关</string>
+    <string>查漏</string>
    </property>
   </action>
   <action name="action_settings">
@@ -482,33 +481,6 @@
   <action name="action_about">
    <property name="text">
     <string>关于</string>
-   </property>
-  </action>
-  <action name="action_test_1">
-   <property name="icon">
-    <iconset resource="MaskGenerator.qrc">
-     <normaloff>:/MaskGenerator/resource/one.ico</normaloff>:/MaskGenerator/resource/one.ico</iconset>
-   </property>
-   <property name="text">
-    <string>测试1</string>
-   </property>
-  </action>
-  <action name="action_test_2">
-   <property name="icon">
-    <iconset resource="MaskGenerator.qrc">
-     <normaloff>:/MaskGenerator/resource/two.ico</normaloff>:/MaskGenerator/resource/two.ico</iconset>
-   </property>
-   <property name="text">
-    <string>测试2</string>
-   </property>
-  </action>
-  <action name="action_test_3">
-   <property name="icon">
-    <iconset resource="MaskGenerator.qrc">
-     <normaloff>:/MaskGenerator/resource/three.ico</normaloff>:/MaskGenerator/resource/three.ico</iconset>
-   </property>
-   <property name="text">
-    <string>测试3</string>
    </property>
   </action>
  </widget>
@@ -725,22 +697,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_test_1</sender>
-   <signal>triggered()</signal>
-   <receiver>MaskGenerator</receiver>
-   <slot>onActionTriggered_Test_1()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>428</x>
-     <y>271</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>verticalSlider_threshold</sender>
    <signal>valueChanged(int)</signal>
    <receiver>MaskGenerator</receiver>
@@ -753,38 +709,6 @@
     <hint type="destinationlabel">
      <x>70</x>
      <y>364</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_test_2</sender>
-   <signal>triggered()</signal>
-   <receiver>MaskGenerator</receiver>
-   <slot>onActionTriggered_Test_2()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>429</x>
-     <y>304</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_test_3</sender>
-   <signal>triggered()</signal>
-   <receiver>MaskGenerator</receiver>
-   <slot>onActionTriggered_Test_3()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>429</x>
-     <y>304</y>
     </hint>
    </hints>
   </connection>
