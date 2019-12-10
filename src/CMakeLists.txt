@@ -4,7 +4,7 @@ project(MaskGenerator)
 set(CMAKE_CXX_STANDARD 14)
 
 IF (WIN32)
-    set(OpenCV_DIR "D:/Libraries/OpenCV/3.4.5/build_vc15/install")
+    set(OpenCV_DIR "D:/Libraries/OpenCV/4.1.2/build_vc16/install")
     set(Qt5_DIR "D:/Libraries/Qt/5.13.2/msvc2017_64/lib/cmake/Qt5")
 ELSEIF (UNIX)
     set(OpenCV_DIR "/usr/lib/cmake/opencv4")

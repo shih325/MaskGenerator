@@ -719,18 +719,23 @@ void MaskGeneratorView::onActionTriggered_Check() {
 
     int current = MetaDataObj["current"].toInt();
     int total = MetaDataObj["num"].toInt();
-
+    int num =current;//前current个元素中到底有多少是真的被标注完了.
+                    //注意current实际上表示的是从前往后第一个没有被标注的元素的下标,从0开始,所以current表示的也是有多少个元素被标注过了
 
     //读取ImageListJson,判别是否被标记,进行移动,然后写回到ImageListJsonRef
-    for (int i = 0; i < current; ++i) {
-        ImageListJson.at(i)[0].toInt();
-        ImageListJson.erase()
+    for(auto iter =ImageListJson.begin();iter!=ImageListJson.end()&&current>0;iter++){
+        //如果'mask字段是空的,或者mask文件夹里面没有对应的文件,那么这个条目就是没有被标注的'
+        if(iter['mask'].toString().isEmpty()){
+            QJsonValue temp=*iter.a;
+            iter=ImageListJson.erase(iter);
+            iter=ImageListJson.insert(ImageListJson.end(),temp);
+            num--;
+        }
+        //无论如何,我们只检查current个元素
+        current--;
     }
-
-
     //修改current的值
-
-    MetaDataObj["current"] = current;
+    MetaDataObj["current"] = num;
 
     //对象写回
     MetaDateRef=MetaDataObj;

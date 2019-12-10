@@ -712,6 +712,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_check</sender>
+   <signal>triggered()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onActionTriggered_Check()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>443</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onActionTriggered_OpenFolder()</slot>
@@ -727,9 +743,7 @@
   <slot>onActionTriggered_Settings()</slot>
   <slot>onActionTriggered_Help()</slot>
   <slot>onActionTriggered_About()</slot>
-  <slot>onActionTriggered_Test_1()</slot>
   <slot>onValueChanged_threshold(int)</slot>
-  <slot>onActionTriggered_Test_2()</slot>
-  <slot>onActionTriggered_Test_3()</slot>
+  <slot>onActionTriggered_Check()</slot>
  </slots>
 </ui>
