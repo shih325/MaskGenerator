@@ -25,7 +25,14 @@ private:
     cv::Mat * target;                                       //当前正在标定的源图片(不更改)
     cv::Mat * working_img;                                  //中间结果(更新,不保存到文件,需要历史记录)
     cv::Mat * mask;                                         //掩码(更新,保存到文件,需要历史记录)
+    std::vector<std::vector<cv::Point> > contours;          // contours of working image
     int threshold = 0;                                      //边缘检测阈值(需要历史记录)
+    int thickness = 1;                                      // thickness of pen
+    cv::Point penPrePoint;
+    cv::Point lassoPoints[50][20];                          // the points of lasso tool
+
+    int iptLasso[50] = { 0 };                                         // # of point in a lasso
+    int nLasso = 0;                                         // the number of lasso
     float scaleFactor = 100;
     int current=0;                                          //当前文件编号,仅用于显示状态栏中的数字,不能参与其他计算
     int total=0;                                            //总共文件数,仅用于显示状态栏中的数字,不能参与其他计算
@@ -42,6 +49,9 @@ private:
     DISPLAY_MODE m_DisplayMode = ORIGIN;
     enum DIRECTION {PREV, NEXT};                              // json 'current' value update direction;
     DIRECTION m_Direction = NEXT;
+
+    enum MASK_METHOD {POLY_LASSO, PEN, ORIGINAL};
+    MASK_METHOD m_MaskMethod = ORIGINAL;
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
@@ -77,7 +87,13 @@ public slots:
     void onMouseWheelZoom(int delta);
 	
     void onValueChanged_threshold(int value);
+    void onValueChanged_thickness(int value);
 	void onMouseLeftDown(int x, int y);
+	void onMouseMoved(int x, int y);
+	void onMouseDoubleClicked(int x, int y);
+
+	void onMouseButtonClicked();
+    void onPenButtonClicked();
 };
 
 

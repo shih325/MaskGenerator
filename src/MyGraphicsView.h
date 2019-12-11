@@ -19,6 +19,7 @@ public:
     void wheelEvent(QWheelEvent * event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent * event) override;
+	void mouseDoubleClickEvent(QMouseEvent * event) override;
 signals:
     void mouseWheelZoom(int delta);
 };
@@ -33,6 +34,7 @@ class MyQGraphicsScene : public QGraphicsScene
 public:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override ;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) override;
 };
 /*
  * ==========
@@ -45,9 +47,11 @@ class MyQGraphicsPixmapItem : public QObject, public QGraphicsPixmapItem
 public:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override ;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override ;
 signals:
 	void mouseLeftDown(int x, int y);
 	void mouseMoved(int x,int y);
+	void mouseDoubleClicked(int x, int y);
 };
 
 #endif //MASKGENERATOR_MYGRAPHICSVIEW_H

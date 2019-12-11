@@ -163,6 +163,8 @@ void MaskGeneratorView::onActionTriggered_UnDo() {
 	HistoryData * history_data=new HistoryData;
     if(this->history->undo(history_data)){
         this->threshold=history_data->threshold;
+        this->nLasso = history_data->inumLasso;
+        this->iptLasso[nLasso] = history_data->iptLasso;
         ui.verticalSlider_threshold->setValue(this->threshold);
 
         *this->working_img=*history_data->workingImg;
@@ -178,6 +180,8 @@ void MaskGeneratorView::onActionTriggered_ReDo() {
 	HistoryData * history_data = new HistoryData;
 	if (this->history->redo(history_data)) {
 		this->threshold = history_data->threshold;
+		this->nLasso = history_data->inumLasso;
+		this->iptLasso[nLasso] = history_data->iptLasso;
 		ui.verticalSlider_threshold->setValue(this->threshold);
 
 		*this->working_img = *history_data->workingImg;
@@ -455,7 +459,7 @@ bool MaskGeneratorView::JobStart() {
     //显示working
     updateUI();
     //历史记录初始化
-    auto * initData = new HistoryData(this->threshold,this->working_img,this->mask);
+    auto * initData = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
     this->history->clear();
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
@@ -504,8 +508,10 @@ void MaskGeneratorView::showMat(cv::Mat img) {
         *qimage_to_show = Tools::cvMat2QImage(img);
         m_GraphicsScene = new MyQGraphicsScene();
         m_GraphicsItem = new MyQGraphicsPixmapItem();
+        MaskGeneratorView::setMouseTracking(true);
         connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
-        //connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
+        connect(m_GraphicsItem, SIGNAL(mouseMoved(int, int)), this, SLOT(onMouseMoved(int, int)));
+        connect(m_GraphicsItem, SIGNAL(mouseDoubleClicked(int, int)), this, SLOT(onMouseDoubleClicked(int, int)));
         m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
         //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
         m_GraphicsScene->addItem(m_GraphicsItem);
@@ -517,27 +523,115 @@ void MaskGeneratorView::showMat(cv::Mat img) {
  * 响应阈值滑动条的运动
  */
 void MaskGeneratorView::onValueChanged_threshold(int value) {
+    this->m_MaskMethod = ORIGINAL;
     if(this->threshold!=value){
         this->threshold = value;
         workingImgRefresh();
     }
 }
+
+void MaskGeneratorView::onValueChanged_thickness(int value) {
+    this->m_MaskMethod = PEN;
+    if(this->thickness!=value){
+        this->thickness = value;
+        workingImgRefresh();
+    }
+}
+
+void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
+//    std::cout << "mask generator mouse double clicked" << std::endl;
+    if (this->m_MaskMethod == POLY_LASSO) {
+        const cv::Point * ppt[1] = {lassoPoints[nLasso]};
+        int npt[] = { iptLasso[nLasso] };
+        cv::polylines(*this->working_img, ppt, npt, 1, 1, cv::Scalar(255, 0, 0));
+        cv::fillPoly(*this->working_img, ppt, npt, 1, cv::Scalar(255, 0, 0));
+        cv::polylines(*this->mask, ppt, npt, 1, 1, cv::Scalar(255, 255, 255));
+        cv::fillPoly(*this->mask, ppt, npt, 1, cv::Scalar(255, 255, 255));
+        nLasso++;
+    }
+    showMat(*this->working_img);
+    updateUI();
+    auto history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
+    this->history->add(history_data);
+    QString msg;
+    msg.sprintf("Mark at (%d,%d)", x,y);
+    m_HistoryLogWidget->add(msg);
+}
+
+// refresh bug
+void MaskGeneratorView::onMouseMoved(int x, int y) {
+    std::cout << "mouse moved" << std::endl;
+    std::cout << x << ", " << y << std::endl;
+    if (this->m_MaskMethod == PEN) {
+        cv::Point curPoint = cv::Point(x, y);
+        cv::rectangle(*this->working_img, cv::Rect(x, y, this->thickness, this->thickness), cv::Scalar(255,0,0), cv::FILLED);
+        penPrePoint = curPoint;
+        // updateUI();
+    }
+//    showMat(*this->working_img);
+//    auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
+//    this->history->add(history_data);
+//    QString msg;
+//    msg.sprintf("Mark at (%d,%d)", x,y);
+//    m_HistoryLogWidget->add(msg);
+}
+
 /*
  * 响应图片上的左键按下事件
  */
 void MaskGeneratorView::onMouseLeftDown(int x, int y)
 {
     if(this->m_DisplayMode==ORIGIN){
-        cv::Point seed = cv::Point(x, y);
-        cv::Scalar fill_color = cv::Scalar(255, 0, 0);
-        cv::Rect ccomp;
-        int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
-        //working_img 和 mask都会被改
-        floodFill(*this->working_img,*this->mask,
-                  seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
+        std::cout << this->m_MaskMethod << std::endl;
+        if (this->m_MaskMethod == POLY_LASSO) {
+            cv::Point prePoint;
+            cv::Point curPoint;
+            if (iptLasso[nLasso] == 0) {
+                prePoint = cv::Point(x, y);
+                curPoint = cv::Point(x, y);
+            }
+            else {
+                prePoint = this->lassoPoints[nLasso][iptLasso[nLasso]-1];
+                curPoint = cv::Point(x, y);
+            }
+            this->lassoPoints[nLasso][iptLasso[nLasso]] = curPoint;
+            iptLasso[nLasso]++;
+            const cv::Point * ppt[1] = {lassoPoints[nLasso]};
+            int npt[] = { iptLasso[nLasso] };
+            cv::polylines(*this->working_img, ppt, npt, 1, 0, cv::Scalar(0,0,0));
+        }
+        if (this->m_MaskMethod == PEN) {
+            this->penPrePoint = cv::Point(x, y);
+            cv::Scalar fill_color = cv::Scalar(255, 0, 0);
+            // mask will shift
+            cv::rectangle(*this->working_img, cv::Point(x-(this->thickness-1)/2, y-(this->thickness-1)/2), cv::Point(x+this->thickness/2, y+this->thickness/2), fill_color, cv::FILLED);
+            cv::rectangle(*this->mask, cv::Point(x-(this->thickness-1)/2, y-(this->thickness-1)/2), cv::Point(x+this->thickness/2, y+this->thickness/2), cv::Scalar(255,255,255),cv::FILLED);
+        }
+        if (this->m_MaskMethod == ORIGINAL) {
+            cv::Point seed = cv::Point(x, y);   // get the mouse clicked pos;
+            cv::Scalar fill_color = cv::Scalar(255, 0, 0);
+            cv::Rect ccomp;
+            int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
+            //working_img 和 mask都会被改
+            // floodFill(*this->working_img,*this->mask,
+            //          seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
+            //std::cout << this->contours.size() << endl;
+            //std::cout << cv::pointPolygonTest(this->contours[0], seed, false) << std::endl;
+            int ic = 0;
+            for (; ic < this->contours.size(); ic++) {
+                int i = cv::pointPolygonTest(this->contours[ic], seed, false);
+                std::cout << ic << ": " << i << std::endl;
+                if (i != -1) {
+                    cv::drawContours(*this->working_img, this->contours, ic, fill_color, cv::FILLED);
+                    // apply to mask image;
+                    cv::drawContours(*this->mask, this->contours, ic, fill_color, cv::FILLED);
+                    break;
+                }
+            }
+        }
         showMat(*this->working_img);
         updateUI();
-        auto history_data=new HistoryData(this->threshold,this->working_img,this->mask);
+        auto history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
         this->history->add(history_data);
         QString msg;
         msg.sprintf("Mark at (%d,%d)", x,y);
@@ -556,8 +650,8 @@ void MaskGeneratorView::workingImgRefresh() {
 
 
     cv::threshold(gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
-    std::vector<std::vector<cv::Point> > contours;
-    cv::findContours(threshold_img, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
+//    std::vector<std::vector<cv::Point> > contours;
+    cv::findContours(threshold_img, this->contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
     //workingimg赋值为原始图加上边缘
 	*this->working_img = this->target->clone();//要深拷贝,防止元数据污染
 	//把之前画好的mask叠加过来
@@ -723,7 +817,7 @@ void MaskGeneratorView::onActionTriggered_Check() {
                     //注意current实际上表示的是从前往后第一个没有被标注的元素的下标,从0开始,所以current表示的也是有多少个元素被标注过了
 
     //读取ImageListJson,判别是否被标记,进行移动,然后写回到ImageListJsonRef
-    for(auto iter =ImageListJson.begin();iter!=ImageListJson.end()&&current>0;iter++){
+    for(auto iter = ImageListJson.begin();iter!=ImageListJson.end()&&current>0;iter++){
         //如果'mask字段是空的,或者mask文件夹里面没有对应的文件,那么这个条目就是没有被标注的'
         if(iter['mask'].toString().isEmpty()){
             QJsonValue temp=*iter.a;
@@ -744,4 +838,16 @@ void MaskGeneratorView::onActionTriggered_Check() {
     file.resize(0);
     file.write(QJsonDocument(RootObject).toJson());
     file.close();
+}
+
+void MaskGeneratorView::onMouseButtonClicked() {
+    this->m_MaskMethod = POLY_LASSO;
+    ui.pushButton_mouse->setCheckable(false);
+    std::cout << "mouse button clicked" << std::endl;
+}
+
+void MaskGeneratorView::onPenButtonClicked() {
+    this->m_MaskMethod = PEN;
+    ui.pushButton_pen->setCheckable(false);
+    std::cout << "pen button clicked" << std::endl;
 }

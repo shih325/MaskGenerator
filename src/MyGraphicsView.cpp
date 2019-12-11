@@ -42,6 +42,7 @@ void MyQGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
  * 鼠标移动事件:view
  */
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *event) {
+    QGraphicsView::setMouseTracking(true);
     QGraphicsView::mouseMoveEvent(event);
 }
 /*
@@ -56,3 +57,23 @@ void MyQGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 void MyQGraphicsPixmapItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     emit mouseMoved(event->scenePos().x(), event->scenePos().y());
 }
+
+void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+/*
+ * 鼠标移动事件:sense
+ */
+void MyQGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    QGraphicsScene::mouseDoubleClickEvent(event);
+}
+/*
+ * 鼠标移动事件:item
+ */
+void MyQGraphicsPixmapItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    if (event->button() == Qt::LeftButton)
+    {
+        emit mouseDoubleClicked(event->scenePos().x(), event->scenePos().y());
+    }
+}
+

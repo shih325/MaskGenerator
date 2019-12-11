@@ -14,11 +14,15 @@
  */
 HistoryData::HistoryData() {
     this->threshold = 0;
+    this->iptLasso = 0;
+    this->inumLasso = 0;
     this->maskImg = nullptr;
     this->workingImg = nullptr;
 }
-HistoryData::HistoryData(int value,cv::Mat * working,cv::Mat * mask) {
+HistoryData::HistoryData(int value, int ptlassoValue, int numLasso, cv::Mat * working,cv::Mat * mask) {
     this->threshold = value;
+    this->iptLasso = ptlassoValue;
+    this->inumLasso = numLasso;
     this->maskImg = new cv::Mat(mask->clone());
     this->workingImg = new cv::Mat(working->clone());
 }
@@ -34,6 +38,8 @@ HistoryData::~HistoryData() {
  */
 HistoryData::HistoryData(const HistoryData &data) {
     this->threshold = data.threshold;
+    this->iptLasso = data.iptLasso;
+    this->inumLasso = data.inumLasso;
     this->maskImg = new cv::Mat(data.maskImg->clone());
     this->workingImg = new cv::Mat(data.workingImg->clone());
 }
@@ -42,6 +48,8 @@ HistoryData::HistoryData(const HistoryData &data) {
  */
 HistoryData &HistoryData::operator=(const HistoryData &data) {
     this->threshold = data.threshold;
+    this->iptLasso = data.iptLasso;
+    this->inumLasso = data.inumLasso;
     this->maskImg = new cv::Mat(data.maskImg->clone());
     this->workingImg = new cv::Mat(data.workingImg->clone());
     return *this;
@@ -50,7 +58,7 @@ HistoryData &HistoryData::operator=(const HistoryData &data) {
  * clone
  */
 HistoryData *HistoryData::clone() {
-    return new HistoryData(this->threshold,this->workingImg,this->maskImg);
+    return new HistoryData(this->threshold,this->iptLasso, this->inumLasso, this->workingImg,this->maskImg);
 }
 
 
@@ -106,6 +114,8 @@ bool History::undo(HistoryData* data) {
         data->maskImg = this->stackA->top()->maskImg;
 		data->workingImg = this->stackA->top()->workingImg;
 		data->threshold = this->stackA->top()->threshold;
+		data->iptLasso = this->stackA->top()->iptLasso;
+		data->inumLasso = this->stackA->top()->inumLasso;
         return true;
     }
 }
@@ -123,6 +133,8 @@ bool History::redo(HistoryData* data) {
 		data->maskImg = this->stackB->top()->maskImg;
 		data->workingImg = this->stackB->top()->workingImg;
 		data->threshold = this->stackB->top()->threshold;
+		data->iptLasso = this->stackB->top()->iptLasso;
+		data->inumLasso = this->stackB->top()->inumLasso;
         this->stackA->push(data->clone());
         this->stackB->pop();
     }

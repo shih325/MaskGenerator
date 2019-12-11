@@ -13,7 +13,7 @@
 class HistoryData{
 public:
     HistoryData();
-    HistoryData(int value,cv::Mat * working,cv::Mat * mask);
+    HistoryData(int value, int ptlassoValue, int numLasso, cv::Mat * working,cv::Mat * mask);
     ~HistoryData();
     HistoryData(const HistoryData& data);
     HistoryData * clone ();
@@ -22,6 +22,8 @@ public:
     cv::Mat * workingImg;
     cv::Mat * maskImg;
     int threshold;
+    int iptLasso;
+    int inumLasso;
 };
 
 class History {
