@@ -607,3 +607,5 @@ _deps
 /.idea/
 /.github/
 /sln/
+/Example/images/list.json
+/Example/masks/

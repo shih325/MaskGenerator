@@ -549,7 +549,7 @@ void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
         cv::fillPoly(*this->mask, ppt, npt, 1, cv::Scalar(255, 255, 255));
         nLasso++;
     }
-    showMat(*this->working_img);
+    //showMat(*this->working_img);
     updateUI();
     auto history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
     this->history->add(history_data);
@@ -629,7 +629,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
                 }
             }
         }
-        showMat(*this->working_img);
+        //showMat(*this->working_img);
         updateUI();
         auto history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
         this->history->add(history_data);
