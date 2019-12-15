@@ -50,8 +50,8 @@ private:
     enum DIRECTION {PREV, NEXT};                              // json 'current' value update direction;
     DIRECTION m_Direction = NEXT;
 
-    enum MASK_METHOD {POLY_LASSO, PEN, ORIGINAL};
-    MASK_METHOD m_MaskMethod = ORIGINAL;
+    enum CURSOR {MOUSE,PEN, MAGIC_WAND, FILL_COLOR,POLY_LASSO}; //光标类型:鼠标指针,铅笔,魔棒,填充,多边形套索 
+    CURSOR m_CursorType = MOUSE;                                //当前光标类型
 
     void CreateJsonList(QStringList filelist);              //初始化构造json文件
     void SaveCurrent(QString maskfilename,QString label);   //向json中记录当前图片已经处理完
@@ -76,24 +76,26 @@ public slots:
     void onActionTriggered_ReDo();
     void onActionTriggered_Prior();
     void onActionTriggered_Next();
-
+    void onActionTriggered_Settings();
     void onActionTriggered_ShowOrigin();
     void onActionTriggered_ShowMask();
-
-    void onActionTriggered_Settings();
+    void onActionTriggered_Check();
     void onActionTriggered_Help();
     void onActionTriggered_About();
-    void onActionTriggered_Check();
-    void onMouseWheelZoom(int delta);
-	
+    
     void onValueChanged_threshold(int value);
     void onValueChanged_thickness(int value);
+    void onMouseWheelZoom(int delta);
 	void onMouseLeftDown(int x, int y);
-	void onMouseMoved(int x, int y);
+    void onMouseLeftRelease(int x, int y);
+	void onMouseLeftMoved(int x, int y);
 	void onMouseDoubleClicked(int x, int y);
 
-	void onMouseButtonClicked();
-    void onPenButtonClicked();
+	void onPushButtonDown_Mouse();
+    void onPushButtonDown_Pen();
+    void onPushButtonDown_Magic();
+    void onPushButtonDown_Fill();
+    void onPushButtonDown_Lasso();
 };
 
 

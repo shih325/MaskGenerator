@@ -26,5 +26,8 @@
         <file>resource/new_moon.ico</file>
         <file>resource/help.ico</file>
         <file>resource/check.ico</file>
+        <file>resource/Fill_color.ico</file>
+        <file>resource/Magic.ico</file>
+        <file>resource/polygonallasso.ico</file>
     </qresource>
 </RCC>

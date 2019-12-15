@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>621</height>
+    <width>902</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -25,6 +25,45 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
+    <item row="3" column="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="minimumSize">
+       <size>
+        <width>275</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>240</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>备注</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="textEdit_label"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="1" rowspan="4">
      <widget class="QFrame" name="frame_2">
       <property name="minimumSize">
@@ -40,7 +79,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_6">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <property name="spacing">
@@ -52,28 +100,84 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0" rowspan="3">
-     <widget class="QFrame" name="frame">
+    <item row="1" column="2" rowspan="2">
+     <widget class="QGroupBox" name="groupBox_history">
+      <property name="minimumSize">
+       <size>
+        <width>275</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>60</width>
+        <width>300</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
+      <property name="title">
+       <string>历史记录</string>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="historyLayout"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>100</height>
+       </size>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
+      <property name="title">
+       <string>属性</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>画笔</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>魔棒</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
         <widget class="QSlider" name="verticalSlider_threshold">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>25</height>
+          </size>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -85,20 +189,26 @@
           <number>0</number>
          </property>
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Horizontal</enum>
          </property>
          <property name="tickPosition">
           <enum>QSlider::TicksBothSides</enum>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="2" column="1">
         <widget class="QSlider" name="verticalSlider_thickness">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>25</height>
+          </size>
          </property>
          <property name="minimum">
           <number>1</number>
@@ -107,25 +217,31 @@
           <number>6</number>
          </property>
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBothSides</enum>
+         </property>
+         <property name="tickInterval">
+          <number>0</number>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="0" column="0" rowspan="4">
      <widget class="QGroupBox" name="groupBox">
       <property name="minimumSize">
        <size>
-        <width>60</width>
+        <width>40</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>60</width>
-        <height>115</height>
+        <height>16777215</height>
        </size>
       </property>
       <property name="title">
@@ -134,6 +250,9 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QPushButton" name="pushButton_mouse">
+         <property name="toolTip">
+          <string>鼠标指针</string>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -146,20 +265,23 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_pen">
+         <property name="toolTip">
+          <string>铅笔</string>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -172,65 +294,124 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QGroupBox" name="groupBox_4">
-      <property name="maximumSize">
-       <size>
-        <width>420</width>
-        <height>240</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>备注</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="verticalSpacing">
-        <number>0</number>
-       </property>
-       <property name="margin">
-        <number>3</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="textEdit_label"/>
+       <item>
+        <widget class="QPushButton" name="pushButton_Magic">
+         <property name="toolTip">
+          <string>魔棒</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="MaskGenerator.qrc">
+           <normaloff>:/MaskGenerator/resource/Magic.ico</normaloff>:/MaskGenerator/resource/Magic.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="2" rowspan="3">
-     <widget class="QGroupBox" name="groupBox_history">
-      <property name="maximumSize">
-       <size>
-        <width>420</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>历史记录</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="margin">
-        <number>3</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="historyLayout"/>
+       <item>
+        <widget class="QPushButton" name="pushButton_Fill">
+         <property name="toolTip">
+          <string>填充</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="MaskGenerator.qrc">
+           <normaloff>:/MaskGenerator/resource/Fill_color.ico</normaloff>:/MaskGenerator/resource/Fill_color.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_Lasso">
+         <property name="toolTip">
+          <string>多边形套索</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="MaskGenerator.qrc">
+           <normaloff>:/MaskGenerator/resource/polygonallasso.ico</normaloff>:/MaskGenerator/resource/polygonallasso.ico</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -242,8 +423,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>686</width>
-     <height>26</height>
+     <width>902</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -688,8 +869,8 @@
    <slot>onValueChanged_threshold(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>30</x>
-     <y>348</y>
+     <x>655</x>
+     <y>116</y>
     </hint>
     <hint type="destinationlabel">
      <x>70</x>
@@ -714,18 +895,34 @@
    </hints>
   </connection>
   <connection>
+   <sender>verticalSlider_thickness</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onValueChanged_thickness(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>677</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>71</x>
+     <y>424</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>pushButton_mouse</sender>
    <signal>clicked()</signal>
    <receiver>MaskGenerator</receiver>
-   <slot>onMouseButtonClicked()</slot>
+   <slot>onPushButtonDown_Mouse()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>42</x>
-     <y>118</y>
+     <x>35</x>
+     <y>97</y>
     </hint>
     <hint type="destinationlabel">
-     <x>8</x>
-     <y>134</y>
+     <x>67</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>
@@ -733,31 +930,63 @@
    <sender>pushButton_pen</sender>
    <signal>clicked()</signal>
    <receiver>MaskGenerator</receiver>
-   <slot>onPenButtonClicked()</slot>
+   <slot>onPushButtonDown_Pen()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>35</x>
-     <y>165</y>
+     <x>25</x>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
-     <x>6</x>
-     <y>169</y>
+     <x>247</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>verticalSlider_thickness</sender>
-   <signal>valueChanged(int)</signal>
+   <sender>pushButton_Magic</sender>
+   <signal>clicked()</signal>
    <receiver>MaskGenerator</receiver>
-   <slot>onValueChanged_thickness(int)</slot>
+   <slot>onPushButtonDown_Magic()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>52</x>
-     <y>407</y>
+     <x>46</x>
+     <y>171</y>
     </hint>
     <hint type="destinationlabel">
-     <x>71</x>
-     <y>424</y>
+     <x>419</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_Fill</sender>
+   <signal>clicked()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onPushButtonDown_Fill()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>63</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_Lasso</sender>
+   <signal>clicked()</signal>
+   <receiver>MaskGenerator</receiver>
+   <slot>onPushButtonDown_Lasso()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>236</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>745</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>
@@ -778,8 +1007,11 @@
   <slot>onActionTriggered_About()</slot>
   <slot>onValueChanged_threshold(int)</slot>
   <slot>onActionTriggered_Check()</slot>
-  <slot>onMouseButtonClicked()</slot>
-  <slot>onPenButtonClicked()</slot>
   <slot>onValueChanged_thickness(int)</slot>
+  <slot>onPushButtonDown_Mouse()</slot>
+  <slot>onPushButtonDown_Pen()</slot>
+  <slot>onPushButtonDown_Magic()</slot>
+  <slot>onPushButtonDown_Fill()</slot>
+  <slot>onPushButtonDown_Lasso()</slot>
  </slots>
 </ui>

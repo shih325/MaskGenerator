@@ -20,6 +20,7 @@ public:
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent * event) override;
 	void mouseDoubleClickEvent(QMouseEvent * event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 signals:
     void mouseWheelZoom(int delta);
 };
@@ -35,6 +36,7 @@ public:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override ;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 };
 /*
  * ==========
@@ -48,10 +50,14 @@ public:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override ;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override ;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 signals:
 	void mouseLeftDown(int x, int y);
-	void mouseMoved(int x,int y);
+    void mouseRightDown(int x, int y);
+    void mouseLeftRelease(int x, int y);
+	void mouseLeftMoved(int x,int y);
 	void mouseDoubleClicked(int x, int y);
+    
 };
 
 #endif //MASKGENERATOR_MYGRAPHICSVIEW_H
