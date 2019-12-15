@@ -8,22 +8,22 @@
  * cv::Mat转换为QImage
  */
 QImage Tools::cvMat2QImage(const cv::Mat &mat) {
-    cv::Mat mat_8;
-    switch (mat.channels())
-    {
-        case 1:
-            mat.convertTo(mat_8, CV_8UC1);
-            break;
-        case 2:
-            mat.convertTo(mat_8, CV_8UC2);
-            break;
-        case 3:
-            mat.convertTo(mat_8, CV_8UC3);
-            break;
-        case 4:
-            mat.convertTo(mat_8, CV_8UC4);
-            break;
-    }
+    cv::Mat mat_8= mat;
+    //switch (mat.channels())
+    //{
+    //    case 1:
+    //        mat.convertTo(mat_8, CV_8UC1);
+    //        break;
+    //    case 2:
+    //        mat.convertTo(mat_8, CV_8UC2);
+    //        break;
+    //    case 3:
+    //        mat.convertTo(mat_8, CV_8UC3);
+    //        break;
+    //    case 4:
+    //        mat.convertTo(mat_8, CV_8UC4);
+    //        break;
+    //}
     // 8-bits unsigned, NO. OF CHANNELS = 1
     if (mat_8.type() == CV_8UC1)
     {
@@ -51,7 +51,7 @@ QImage Tools::cvMat2QImage(const cv::Mat &mat) {
         const uchar *pSrc = (const uchar*)mat_8.data;
         // Create QImage with same dimensions as input Mat
         QImage image(pSrc, mat_8.cols, mat_8.rows, mat_8.step, QImage::Format_RGB888);
-        return image.rgbSwapped();
+        return image;//.rgbSwapped()
     }
     else if (mat_8.type() == CV_8UC4)
     {

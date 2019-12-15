@@ -19,6 +19,7 @@ void MyGraphicsView::wheelEvent(QWheelEvent *event) {
  */
 void MyGraphicsView::mousePressEvent(QMouseEvent * event)
 {
+    //qDebug() << "view:鼠标按键";
 	QGraphicsView::mousePressEvent(event);
 }
 /*
@@ -26,6 +27,7 @@ void MyGraphicsView::mousePressEvent(QMouseEvent * event)
  */
 void MyQGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+    //qDebug() << "sense:鼠标按键";
 	QGraphicsScene::mousePressEvent(event);
 }
 /*
@@ -33,8 +35,10 @@ void MyQGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
  */
 void MyQGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+    //qDebug() << "item:鼠标按键";
 	if (event->button() == Qt::LeftButton)
 	{
+        //qDebug() << "item:鼠标左键按下";
 		emit mouseLeftDown(event->scenePos().x(), event->scenePos().y());
 	}
 }
@@ -42,6 +46,7 @@ void MyQGraphicsPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
  * 鼠标移动事件:view
  */
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *event) {
+    //qDebug() << "view:鼠标移动";
     //QGraphicsView::setMouseTracking(true);
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -49,20 +54,22 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *event) {
  * 鼠标移动事件:sense
  */
 void MyQGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    //qDebug() << "sense:鼠标移动";
     QGraphicsScene::mouseMoveEvent(event);
 }
 /*
  * 鼠标移动事件:item
  */
 void MyQGraphicsPixmapItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
-        emit mouseLeftMoved(event->scenePos().x(), event->scenePos().y());
-    }
+    /*qDebug() << "item:鼠标移动";
+    qDebug() << "item:鼠标移动========================";*/
+    emit mouseLeftMoved(event->scenePos().x(), event->scenePos().y());
 }
 /*
  * 鼠标双击事件:view
  */
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
+    //qDebug() << "view:鼠标双击";
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -70,6 +77,7 @@ void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *event) {
  * 鼠标双击事件:sense
  */
 void MyQGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    //qDebug() << "sense:鼠标双击";
     QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
@@ -77,20 +85,18 @@ void MyQGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
  * 鼠标双击事件:item
  */
 void MyQGraphicsPixmapItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    //qDebug() << "item:鼠标双击";
     if (event->button() == Qt::LeftButton)
     {
         emit mouseDoubleClicked(event->scenePos().x(), event->scenePos().y());
     }
 }
-
-
-
 /*
  * 鼠标释放事件:View
  */
 void MyGraphicsView::mouseReleaseEvent(QMouseEvent* event)
 {
-    qDebug() << "button release view";
+    //qDebug() << "button release view";
     QGraphicsView::mouseReleaseEvent(event);
 }
 /*
@@ -98,7 +104,7 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent* event)
  */
 void MyQGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    qDebug() << "button release sense";
+    //qDebug() << "button release sense";
     QGraphicsScene::mouseReleaseEvent(event);
 }
 /*
@@ -106,12 +112,11 @@ void MyQGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
  */
 void MyQGraphicsPixmapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    QGraphicsPixmapItem::mouseReleaseEvent(event);
-    qDebug() << "button release item";
+    //qDebug() << "button release item";
     if (event->button() == Qt::LeftButton) 
     {
         emit mouseLeftRelease(event->scenePos().x(), event->scenePos().y());
-        qDebug() << "left button release";
+        //qDebug() << "left button release";
     }
 }
 

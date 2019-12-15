@@ -30,7 +30,7 @@ MaskGeneratorView::MaskGeneratorView(QWidget *parent) :QMainWindow(parent)
     //TODO:关键变量的初始化
 	this->qimage_to_show = new QImage();
 	this->history = new History();
-
+    this->gray = new cv::Mat();
     //TODO:ui初始化和个性化
     ui.setupUi(this);
     ///绘图区域
@@ -207,6 +207,12 @@ bool MaskGeneratorView::JobStart() {
     //获取当前图片文件名
     QString imgfilename = getCurrentImageName();
     this->target = new cv::Mat(cv::imread((srcpath + "/" + imgfilename).toStdString()));
+    cv::cvtColor(*this->target, *this->gray, cv::COLOR_RGB2GRAY);
+
+    std::vector<cv::Mat> channels;
+    cv::split(*this->target, channels);
+    merge(std::vector<cv::Mat>{channels[2], channels[1], channels[0]}, *this->target);
+
     if (this->target->empty()) {
         return false;
     }
@@ -236,21 +242,25 @@ bool MaskGeneratorView::JobStart() {
 void MaskGeneratorView::showMat(cv::Mat img) {
     if (!img.empty()) {
         *qimage_to_show = Tools::cvMat2QImage(img);
-        m_GraphicsScene = new MyQGraphicsScene();
-        m_GraphicsItem = new MyQGraphicsPixmapItem();
+        if (m_GraphicsScene == nullptr) {
+            m_GraphicsScene = new MyQGraphicsScene();
+        }
+        if (m_GraphicsItem == nullptr) {
+            m_GraphicsItem = new MyQGraphicsPixmapItem();
+            connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
+            connect(m_GraphicsItem, SIGNAL(mouseLeftMoved(int, int)), this, SLOT(onMouseLeftMoved(int, int)));
+            connect(m_GraphicsItem, SIGNAL(mouseDoubleClicked(int, int)), this, SLOT(onMouseDoubleClicked(int, int)));
+            connect(m_GraphicsItem, SIGNAL(mouseLeftRelease(int, int)), this, SLOT(onMouseLeftRelease(int, int)));
+        }
+        
         //MaskGeneratorView::setMouseTracking(true);
-
         //m_GraphicsItem -> setAcceptedMouseButtons(Qt::LeftButton);
         //m_GraphicsItem->setFlag(QGraphicsItem::ItemIsSelectable);//必须加上这句，否则item无法获取到鼠标事件
-        //TODO: 更改为永久链接
-        connect(m_GraphicsItem, SIGNAL(mouseLeftDown(int, int)), this, SLOT(onMouseLeftDown(int, int)));
-        connect(m_GraphicsItem, SIGNAL(mouseLeftMoved(int, int)), this, SLOT(onMouseLeftMoved(int, int)));
-        connect(m_GraphicsItem, SIGNAL(mouseDoubleClicked(int, int)), this, SLOT(onMouseDoubleClicked(int, int)));
-        connect(m_GraphicsItem, SIGNAL(mouseLeftRelease(int, int)), this, SLOT(onMouseLeftRelease(int, int)));
 
         m_GraphicsItem->setPixmap(QPixmap::fromImage(*qimage_to_show));
-        //m_GraphicsScene->addPixmap(QPixmap::fromImage(*qimage_to_show));
-        m_GraphicsScene->addItem(m_GraphicsItem);
+        if (m_GraphicsScene->items().size()<=0||m_GraphicsScene->items()[0] != m_GraphicsItem) {
+            m_GraphicsScene->addItem(m_GraphicsItem);
+        }
         m_GraphicsView->setScene(m_GraphicsScene);
         m_GraphicsView->show();
     }
@@ -260,12 +270,12 @@ void MaskGeneratorView::showMat(cv::Mat img) {
  */
 void MaskGeneratorView::workingImgRefresh() {
     //获取一张原始图像的灰度化版本
-    cv::Mat gray, threshold_img;
-    cv::cvtColor(*this->target, gray, cv::COLOR_RGB2GRAY);
+    cv::Mat threshold_img;
+    
     //使用当前的threshold进行处理
 
 
-    cv::threshold(gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
+    cv::threshold(*this->gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
     //    std::vector<std::vector<cv::Point> > contours;
     cv::findContours(threshold_img, this->contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
     //workingimg赋值为原始图加上边缘
@@ -667,7 +677,6 @@ void MaskGeneratorView::onActionTriggered_About() {
  * Event:响应阈值滑动条的运动
  */
 void MaskGeneratorView::onValueChanged_threshold(int value) {
-    this->m_CursorType = MOUSE;
     if(this->threshold!=value){
         this->threshold = value;
         workingImgRefresh();
@@ -713,6 +722,7 @@ void MaskGeneratorView::onMouseWheelZoom(int delta) {
  * Event:响应绘图区域的鼠标双击事件
  */
 void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
+    //qDebug("双击事件");
     if (this->m_CursorType == POLY_LASSO) {
         const cv::Point * ppt[1] = {lassoPoints[nLasso]};
         int npt[] = { iptLasso[nLasso] };
@@ -760,7 +770,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
             cv::Rect ccomp;
             int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
             //working_img 和 mask都会被改
-            // floodFill(*this->working_img,*this->mask,
+            //floodFill(*this->working_img,*this->mask,
             //          seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
             //std::cout << this->contours.size() << endl;
             //std::cout << cv::pointPolygonTest(this->contours[0], seed, false) << std::endl;
@@ -805,8 +815,8 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
  * Event:响应绘图区域的鼠标左键拖动事件
  */
 void MaskGeneratorView::onMouseLeftMoved(int x, int y) {
-    qDebug("move");
     if (this->m_CursorType == PEN) {
+
         cv::circle(*this->working_img, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
         cv::circle(*this->mask, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
         updateUI();
@@ -949,4 +959,27 @@ void MaskGeneratorView::onPushButtonDown_Lasso()
         ui.pushButton_Magic->setChecked(false);
         ui.pushButton_Fill->setChecked(false);
     }
+}
+/*
+ * 测试栈
+ */
+void MaskGeneratorView::onTest()
+{
+    int i = 0;
+    while (!history->stackA->empty())
+    {
+        cv::imshow("A"+std::to_string(i),*history->stackA->top()->workingImg);
+        qDebug()<< history->stackA->top()->workingImg;
+        history->stackA->pop();
+        i++;
+    }
+    i = 0;
+    while (!history->stackB->empty())
+    {
+        cv::imshow("B" + std::to_string(i), *history->stackB->top()->workingImg);
+        qDebug() << history->stackB->top()->workingImg;
+        history->stackB->pop();
+        i++;
+    }
+
 }

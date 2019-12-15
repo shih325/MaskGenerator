@@ -23,11 +23,12 @@ private:
     QString JsonFile;                                       //列表文件所在的路径
 
     cv::Mat * target;                                       //当前正在标定的源图片(不更改)
+    cv::Mat * gray;                                         //原图片的灰度图
     cv::Mat * working_img;                                  //中间结果(更新,不保存到文件,需要历史记录)
     cv::Mat * mask;                                         //掩码(更新,保存到文件,需要历史记录)
     std::vector<std::vector<cv::Point> > contours;          // contours of working image
     int threshold = 0;                                      //边缘检测阈值(需要历史记录)
-    int thickness = 1;                                      // thickness of pen
+    int thickness = 8;                                      // thickness of pen
     cv::Point penPrePoint;
     cv::Point lassoPoints[50][20];                          // the points of lasso tool
 
@@ -96,6 +97,8 @@ public slots:
     void onPushButtonDown_Magic();
     void onPushButtonDown_Fill();
     void onPushButtonDown_Lasso();
+
+    void onTest();
 };
 
 
