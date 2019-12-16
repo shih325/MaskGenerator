@@ -37,6 +37,7 @@ HistoryData::~HistoryData() {
  * 拷贝构造函数
  */
 HistoryData::HistoryData(const HistoryData &data) {
+    std::cout << "copy construct operator" << std::endl;
     this->threshold = data.threshold;
     this->iptLasso = data.iptLasso;
     this->inumLasso = data.inumLasso;
@@ -47,6 +48,7 @@ HistoryData::HistoryData(const HistoryData &data) {
  * 拷贝赋值运算符
  */
 HistoryData &HistoryData::operator=(const HistoryData &data) {
+    std::cout << "copy assign operator" << std::endl;
     this->threshold = data.threshold;
     this->iptLasso = data.iptLasso;
     this->inumLasso = data.inumLasso;
@@ -90,7 +92,10 @@ History::~History() {
  * 添加一个新操作,压入A栈,如果B栈非空,则删空它
  */
 void History::add(HistoryData* data) {
+    std::cout << "add func called" << std::endl;
+    // HistoryData* temp = data->clone();
     this->stackA->push(data);
+    std::cout << "stack A top: " << this->stackA->top()->workingImg << std::endl;
     while (!this->stackB->empty()){
         delete this->stackB->top();
         this->stackB->pop();
@@ -106,17 +111,18 @@ void History::add(HistoryData* data) {
  *
  */
 bool History::undo(HistoryData* data) {
+    std::cout << "undo func called" << std::endl;
     if(this->stackA->size()<=1){//
         return false;
     }else{
-        this->stackB->push(stackA->top()->clone());
+        this->stackB->push(this->stackA->top()->clone());
         this->stackA->pop();
-        data->maskImg = this->stackA->top()->maskImg;
-		data->workingImg = this->stackA->top()->workingImg;
+        data->maskImg = new cv::Mat(this->stackA->top()->maskImg->clone());
+		data->workingImg = new cv::Mat(this->stackA->top()->workingImg->clone());
 		data->threshold = this->stackA->top()->threshold;
 		data->iptLasso = this->stackA->top()->iptLasso;
 		data->inumLasso = this->stackA->top()->inumLasso;
-        return true;
+		return true;
     }
 }
 /*
@@ -126,6 +132,7 @@ bool History::undo(HistoryData* data) {
  *
  */
 bool History::redo(HistoryData* data) {
+    std::cout << "redo func called" << std::endl;
     if(this->stackB->empty()){
         return false;
     }else{
@@ -145,6 +152,7 @@ bool History::redo(HistoryData* data) {
  * keep the top element of stack A, as saved mask image, then prepare for clear();
  */
 void History::savedATop() {
+    std::cout << "saved A top func called" << std::endl;
     while (!this->stackB->empty()){
         delete this->stackB->top();
         this->stackB->pop();
@@ -167,6 +175,7 @@ void History::savedATop() {
  * clear the history
  */
 void History::clear() {
+    // std::cout << "clear" << std::endl;
     while (!this->stackB->empty()){
         delete this->stackB->top();
         this->stackB->pop();

@@ -222,7 +222,8 @@ bool MaskGeneratorView::JobStart() {
     //显示working
     updateUI();
     //历史记录初始化
-    auto* initData = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
+    HistoryData* initData = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
+    std::cout << initData << std::endl;
     this->history->clear();
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
@@ -664,7 +665,7 @@ void MaskGeneratorView::onActionTriggered_Settings() {
  * Action:帮助
  */
 void MaskGeneratorView::onActionTriggered_Help() {
-
+    std::cout << "help" << std::endl;
 }
 /*
  * Action:关于
@@ -734,7 +735,7 @@ void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
     }
     //showMat(*this->working_img);
     updateUI();
-    auto history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
+    HistoryData* history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
     this->history->add(history_data);
     QString msg;
     msg.sprintf("Mark at (%d,%d)", x,y);
@@ -746,7 +747,6 @@ void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
 void MaskGeneratorView::onMouseLeftDown(int x, int y)
 {
     if(this->m_DisplayMode==ORIGIN){
-
         switch (this->m_CursorType)//MOUSE,PEN, MAGIC_WAND, FILL_COLOR,POLY_LASSO
         {
         case MOUSE://鼠标指针
@@ -827,17 +827,20 @@ void MaskGeneratorView::onMouseLeftMoved(int x, int y) {
  */
 void MaskGeneratorView::onMouseLeftRelease(int x, int y)
 {
+    // std::cout << "release" << std::endl;
     if (this->m_CursorType == PEN||
         this->m_CursorType == MAGIC_WAND|| this->m_CursorType == FILL_COLOR|| this->m_CursorType == POLY_LASSO) 
     {
-        auto history_data = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
+        HistoryData* history_data = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
+        //onTest();
+        std::cout << history_data << std::endl;
         this->history->add(history_data);
+        //onTest();
     }
     QString msg;
     switch (this->m_CursorType)
     {
     case MOUSE:
-
         break;
     case PEN:
         msg.sprintf("Draw in (%d,%d)", x, y);
@@ -965,11 +968,12 @@ void MaskGeneratorView::onPushButtonDown_Lasso()
  */
 void MaskGeneratorView::onTest()
 {
+    std::cout << "on test button" << std::endl;
     int i = 0;
     while (!history->stackA->empty())
     {
         cv::imshow("A"+std::to_string(i),*history->stackA->top()->workingImg);
-        qDebug()<< history->stackA->top()->workingImg;
+        std::cout << history->stackA->top()->workingImg << std::endl;
         history->stackA->pop();
         i++;
     }
@@ -977,7 +981,7 @@ void MaskGeneratorView::onTest()
     while (!history->stackB->empty())
     {
         cv::imshow("B" + std::to_string(i), *history->stackB->top()->workingImg);
-        qDebug() << history->stackB->top()->workingImg;
+        // std::cout << history->stackB->top()->workingImg;
         history->stackB->pop();
         i++;
     }

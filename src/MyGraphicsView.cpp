@@ -5,7 +5,7 @@
 #include "MyGraphicsView.h"
 #include <QWheelEvent>
 #include <QMouseEvent>
-#include <qDebug>
+//#include <qDebug>
 #include <QGraphicsSceneMouseEvent>
 /*
  * 滚轮滑动事件:view
