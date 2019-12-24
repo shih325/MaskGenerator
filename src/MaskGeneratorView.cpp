@@ -223,7 +223,7 @@ bool MaskGeneratorView::JobStart() {
     updateUI();
     //历史记录初始化
     HistoryData* initData = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
-    std::cout << initData << std::endl;
+//    std::cout << initData << std::endl;
     this->history->clear();
     this->history->add(initData);
     // m_HistoryLogWidget->clear();
@@ -727,7 +727,7 @@ void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
         const cv::Point * ppt[1] = {lassoPoints[nLasso]};
         int npt[] = { iptLasso[nLasso] };
         cv::polylines(*this->working_img, ppt, npt, 1, 1, cv::Scalar(0, 0, 255));
-//        cv::fillPoly(*this->working_img, ppt, npt, 1, cv::Scalar(0, 0, 255 ));
+        cv::fillPoly(*this->working_img, ppt, npt, 1, cv::Scalar(0, 0, 255 ));
         cv::polylines(*this->mask, ppt, npt, 1, 1, cv::Scalar(255, 255, 255));
         cv::fillPoly(*this->mask, ppt, npt, 1, cv::Scalar(255, 255, 255));
         nLasso++;
@@ -759,14 +759,21 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
         }
         case MAGIC_WAND://魔棒:按下操作,抬起记录历史
         {
+            std::cout << "magic wand" << std::endl;
+            cv::Point seed = cv::Point(x, y);   // get the mouse clicked pos;
+            cv::Scalar fill_color = cv::Scalar(0, 0, 255);
+            cv::Rect ccomp;
+            int flags = 8 | cv::FLOODFILL_FIXED_RANGE | (255 << 8);  //四联通 | ??  | 填充颜色
+            // int flags = 8 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
+            cv::floodFill(*this->working_img, *this->mask, seed, fill_color, &ccomp, cv::Scalar(10,10,7), cv::Scalar(10,10,7), flags);
             break;
         }
         case FILL_COLOR://填充:按下操作,抬起记录历史
         {
             cv::Point seed = cv::Point(x, y);   // get the mouse clicked pos;
             cv::Scalar fill_color = cv::Scalar(0, 0, 255);
-            cv::Rect ccomp;
-            int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
+//            cv::Rect ccomp;
+//            int flags = 4 | cv::FLOODFILL_FIXED_RANGE | (255 << 8);  //四联通 | ??  | 填充颜色
             //working_img 和 mask都会被改
             //floodFill(*this->working_img,*this->mask,
             //          seed, fill_color, &ccomp, cv::Scalar(20, 20, 5), cv::Scalar(20, 20, 5), flags);
@@ -830,7 +837,7 @@ void MaskGeneratorView::onMouseLeftRelease(int x, int y)
     {
         HistoryData* history_data = new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img, this->mask);
         //onTest();
-        std::cout << history_data << std::endl;
+        // std::cout << history_data << std::endl;
         this->history->add(history_data);
         //onTest();
         updateUI();

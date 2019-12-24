@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <stack>
+#include <deque>
 #include "opencv2/opencv.hpp"
 
 class HistoryData{
@@ -30,9 +31,13 @@ class History {
 public:
     History();
     ~History();
-//private:
-    std::stack<HistoryData*> * stackA;
-    std::stack<HistoryData*> * stackB;
+private:
+//    std::stack<HistoryData*> * stackA;
+//    std::stack<HistoryData*> * stackB;
+    std::deque<HistoryData*> * dequeA;
+    std::deque<HistoryData*> * dequeB;
+
+    const int DEQUEA_MAX_SIZE = 15;
 
 public:
     void add(HistoryData* data);
