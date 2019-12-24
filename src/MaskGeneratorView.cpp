@@ -272,10 +272,7 @@ void MaskGeneratorView::showMat(cv::Mat img) {
 void MaskGeneratorView::workingImgRefresh() {
     //获取一张原始图像的灰度化版本
     cv::Mat threshold_img;
-    
     //使用当前的threshold进行处理
-
-
     cv::threshold(*this->gray, threshold_img, this->threshold, 255, cv::THRESH_TOZERO);
     //    std::vector<std::vector<cv::Point> > contours;
     cv::findContours(threshold_img, this->contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
@@ -284,9 +281,11 @@ void MaskGeneratorView::workingImgRefresh() {
     //把之前画好的mask叠加过来
     cv::Mat _mask = this->mask->clone();
     auto _mask_orgi_size = _mask(cv::Rect(1, 1, this->target->cols, this->target->rows));
-    this->working_img->setTo(cv::Scalar(255, 0, 0), _mask_orgi_size);
-    //    cv::Mat pure_blue = cv::Mat(this->target->rows, this->target->cols, CV_8UC3, cv::Scalar(255, 0, 0));
-    //    pure_blue.copyTo(*this->working_img,_mask_orgi_size);
+    this->working_img->setTo(cv::Scalar(0, 0, 255), _mask_orgi_size);
+//    cv::Mat mask_rgb = cv::Mat(this->target->rows, this->target->cols, CV_8UC3, cv::Scalar(0, 0, 0));
+//    mask_rgb.setTo(cv::Scalar(0,0,255), _mask_orgi_size);
+//    *this->working_img = *this->working_img + mask_rgb*0.8;
+    // cv::imshow("mask rgb", mask_rgb);
     drawContours(*this->working_img, contours, -1, cv::Scalar(0, 255, 0), 1);
     updateUI();
 }
@@ -727,13 +726,12 @@ void MaskGeneratorView::onMouseDoubleClicked(int x, int y) {
     if (this->m_CursorType == POLY_LASSO) {
         const cv::Point * ppt[1] = {lassoPoints[nLasso]};
         int npt[] = { iptLasso[nLasso] };
-        cv::polylines(*this->working_img, ppt, npt, 1, 1, cv::Scalar(255, 0, 0));
-        cv::fillPoly(*this->working_img, ppt, npt, 1, cv::Scalar(255, 0, 0));
+        cv::polylines(*this->working_img, ppt, npt, 1, 1, cv::Scalar(0, 0, 255));
+//        cv::fillPoly(*this->working_img, ppt, npt, 1, cv::Scalar(0, 0, 255 ));
         cv::polylines(*this->mask, ppt, npt, 1, 1, cv::Scalar(255, 255, 255));
         cv::fillPoly(*this->mask, ppt, npt, 1, cv::Scalar(255, 255, 255));
         nLasso++;
     }
-    //showMat(*this->working_img);
     updateUI();
     HistoryData* history_data=new HistoryData(this->threshold, this->iptLasso[nLasso], this->nLasso, this->working_img,this->mask);
     this->history->add(history_data);
@@ -755,7 +753,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
         }
         case PEN://铅笔:按下画图,拖动画图,抬起记录历史
         {
-            cv::circle(*this->working_img, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
+            cv::circle(*this->working_img, cv::Point(x, y), this->thickness, cv::Scalar(0, 0, 255), -1);
             cv::circle(*this->mask, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
             break;
         }
@@ -766,7 +764,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
         case FILL_COLOR://填充:按下操作,抬起记录历史
         {
             cv::Point seed = cv::Point(x, y);   // get the mouse clicked pos;
-            cv::Scalar fill_color = cv::Scalar(255, 0, 0);
+            cv::Scalar fill_color = cv::Scalar(0, 0, 255);
             cv::Rect ccomp;
             int flags = 4 | 0 | (255 << 8);  //四联通 | ??  | 填充颜色
             //working_img 和 mask都会被改
@@ -780,7 +778,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
                 if (i != -1) {
                     cv::drawContours(*this->working_img, this->contours, ic, fill_color, cv::FILLED);
                     // apply to mask image;
-                    cv::drawContours(*this->mask, this->contours, ic, fill_color, cv::FILLED);
+                    cv::drawContours(*this->mask, this->contours, ic, cv::Scalar(255,255,255), cv::FILLED);
                     break;
                 }
             }
@@ -802,7 +800,7 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
             iptLasso[nLasso]++;
             const cv::Point* ppt[1] = { lassoPoints[nLasso] };
             int npt[] = { iptLasso[nLasso] };
-            cv::polylines(*this->working_img, ppt, npt, 1, 0, cv::Scalar(0, 0, 0));
+            cv::polylines(*this->working_img, ppt, npt, 1, 0, cv::Scalar(255, 0, 0));
             break;
         }
         default:
@@ -816,9 +814,8 @@ void MaskGeneratorView::onMouseLeftDown(int x, int y)
  */
 void MaskGeneratorView::onMouseLeftMoved(int x, int y) {
     if (this->m_CursorType == PEN) {
-
-        cv::circle(*this->working_img, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
-        cv::circle(*this->mask, cv::Point(x, y), this->thickness, cv::Scalar(255, 0, 0), -1);
+        cv::circle(*this->working_img, cv::Point(x, y), this->thickness, cv::Scalar(0, 0, 255), -1);
+        cv::circle(*this->mask, cv::Point(x, y), this->thickness, cv::Scalar(255, 255, 255), -1);
         updateUI();
     }
 }
@@ -836,6 +833,7 @@ void MaskGeneratorView::onMouseLeftRelease(int x, int y)
         std::cout << history_data << std::endl;
         this->history->add(history_data);
         //onTest();
+        updateUI();
     }
     QString msg;
     switch (this->m_CursorType)
@@ -968,6 +966,12 @@ void MaskGeneratorView::onPushButtonDown_Lasso()
  */
 void MaskGeneratorView::onTest()
 {
+//    cv::Mat img = cv::imread("/home/tlss/repos/vrlab/MaskGenerator/Example/images/21_training.tif");
+//
+//    cv::Mat pure_blue = cv::Mat(img.rows, img.cols, CV_8UC3, cv::Scalar(255, 0, 0));
+//    cv::Mat res = img + pure_blue;
+//    cv::imshow("test", res);
+    /*
     std::cout << "on test button" << std::endl;
     int i = 0;
     while (!history->stackA->empty())
@@ -985,5 +989,5 @@ void MaskGeneratorView::onTest()
         history->stackB->pop();
         i++;
     }
-
+    */
 }
